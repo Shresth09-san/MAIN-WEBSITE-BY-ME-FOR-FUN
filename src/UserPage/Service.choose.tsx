@@ -60,70 +60,184 @@ export const ServiceChoose = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [isScrollingPaused, setIsScrollingPaused] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollAnimationRef = useRef<gsap.core.Tween | null>(null);
   const { theme } = useTheme();
 
-  const isAuthenticated = async () => {
-    const token = Cookies.get('token');
+  /**
+   * Redirects the user to the booking platform
+   * Handles loading state and error handling
+   */
+  const redirectToPrebooking = () => {
+    if (isRedirecting) return; // Prevent multiple clicks
     
+    setIsRedirecting(true);
     try {
-      const response = await axios.post(
-        `${API_URL}/api/getusers/login`,
-        {},
-        { 
-          withCredentials: true,
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-      return response.status === 200;
+      // Track the redirection attempt
+      toast.loading("Redirecting to booking site...", { id: "redirect-toast" });
+      
+      // Add a small delay to allow toast to show before redirect
+      setTimeout(() => {
+        window.location.href = 'https://booking.d0lt.com';
+        toast.dismiss("redirect-toast");
+      }, 300);
     } catch (error) {
-      console.error('Authentication check failed:', error);
-      return false;
+      setIsRedirecting(false);
+      console.error('Redirection error:', error);
+      toast.error("Failed to redirect. Please try again or visit booking.d0lt.com directly.");
     }
   };
 
-  const redirectToPrebooking = async () => {
-    if (!await isAuthenticated()) {
-      navigate('/login');
-      return;
-    }
-    
-    window.location.href = 'https://booking.d0lt.com';
-  };
-
-  // Map service names to categories for robust filtering
-  const serviceToCategory = useMemo(() => {
+  /**
+   * Maps service names to their categories for efficient filtering
+   * @returns Record mapping service names to category strings
+   */
+  const serviceToCategory = useMemo<Record<string, string>>(() => {
     const mapping: Record<string, string> = {};
     allServices.forEach(service => {
-      if (service.name && service.category) {
+      if (service?.name && service?.category) {
         mapping[service.name] = service.category;
       }
     });
     return mapping;
   }, []);
 
-  const getSubservicesForService = (serviceName: string) => {
+  /**
+   * Retrieves subservices for a given service name
+   * @param serviceName The name of the service to look up
+   * @returns Array of subservice strings
+   */
+  const getSubservicesForService = (serviceName: string): string[] => {
+    if (!serviceName) return [];
     const service = allServices.find(s => s.name === serviceName);
     return service?.subServices || [];
+  };
+
+  /**
+   * Pauses the GSAP animation when called
+   */
+  const pauseScrollAnimation = () => {
+    if (scrollAnimationRef.current) {
+      scrollAnimationRef.current.pause();
+      setIsScrollingPaused(true);
+    }
+  };
+
+  /**
+   * Resumes the GSAP animation if not in search mode
+   */
+  const resumeScrollAnimation = () => {
+    // Only resume if we have an animation and we're in the default view
+    if (
+      scrollAnimationRef.current && 
+      selectedCategory === "All" && 
+      searchQuery === ""
+    ) {
+      // Resume the animation
+      scrollAnimationRef.current.play();
+      setIsScrollingPaused(false);
+    }
+  };
+
+  /**
+   * Starts or restarts the GSAP scrolling animation
+   */
+  const startScrollAnimation = () => {
+    if (!scrollRef.current || !scrollContainerRef.current) return;
+    
+    // Kill any existing animation
+    if (scrollAnimationRef.current) {
+      scrollAnimationRef.current.kill();
+      scrollAnimationRef.current = null;
+    }
+    
+    // Don't animate if we're searching or filtering
+    if (searchQuery !== "" || selectedCategory !== "All") {
+      return;
+    }
+    
+    try {
+      const totalWidth = scrollRef.current.scrollWidth;
+      const visibleWidth = scrollContainerRef.current.offsetWidth;
+      
+      if (totalWidth > visibleWidth) {
+        const newAnimation = gsap.fromTo(
+          scrollRef.current,
+          { x: 0 },
+          { 
+            x: `-${Math.min(totalWidth / 2, 2000)}px`,
+            duration: Math.min(totalWidth / 80, 30),
+            ease: "linear",
+            repeat: -1,
+            repeatRefresh: true,
+            onRepeat: () => {
+              if (scrollRef.current) {
+                gsap.set(scrollRef.current, { x: "0" });
+              }
+            }
+          }
+        );
+        
+        scrollAnimationRef.current = newAnimation;
+      }
+    } catch (error) {
+      console.error("Error starting scroll animation:", error);
+    }
   };
 
   const handleSearchChange = (query: string) => {
     setIsLoading(true);
     setSearchQuery(query);
+    
+    // Kill any active GSAP animations
+    if (scrollAnimationRef.current) {
+      scrollAnimationRef.current.kill();
+      scrollAnimationRef.current = null;
+    }
+    
     if (scrollRef.current) {
+      gsap.killTweensOf(scrollRef.current);
+      // Reset scroll position
       gsap.set(scrollRef.current, { x: 0 });
     }
-    setTimeout(() => setIsLoading(false), 300);
+    
+    setTimeout(() => {
+      setIsLoading(false);
+      
+      // Only restart animation if search is cleared and category is All
+      if (query === "" && selectedCategory === "All") {
+        startScrollAnimation();
+      }
+    }, 300);
   };
 
   const handleCategoryChange = (category: string) => {
     setIsLoading(true);
     setSelectedCategory(category);
+    
+    // Kill any active GSAP animations
+    if (scrollAnimationRef.current) {
+      scrollAnimationRef.current.kill();
+      scrollAnimationRef.current = null;
+    }
+    
     if (scrollRef.current) {
+      gsap.killTweensOf(scrollRef.current);
+      // Reset scroll position
       gsap.set(scrollRef.current, { x: 0 });
     }
-    setTimeout(() => setIsLoading(false), 300);
+    
+    setTimeout(() => {
+      setIsLoading(false);
+      
+      // Only restart animation if category is All and search is empty
+      if (category === "All" && searchQuery === "") {
+        startScrollAnimation();
+      }
+    }, 300);
   };
 
   const filteredServices = useMemo(() => {
@@ -143,21 +257,30 @@ export const ServiceChoose = () => {
     if (!scrollRef.current || !scrollContainerRef.current) return;
     
     const cleanup = () => {
+      if (scrollAnimationRef.current) {
+        scrollAnimationRef.current.kill();
+        scrollAnimationRef.current = null;
+      }
+      
       if (scrollRef.current) {
         gsap.killTweensOf(scrollRef.current);
       }
     };
     
     try {
-      gsap.killTweensOf(scrollRef.current);
+      // Clear any existing animations
+      cleanup();
       
+      // Remove any existing clones
       const existingClones = scrollRef.current.querySelectorAll('.clone-item');
       existingClones.forEach(clone => clone.remove());
       
+      // Only add clones and start animation if we're in the default view
       if (selectedCategory === "All" && searchQuery === "" && filteredServices.length > 3) {
         const originalItems = Array.from(scrollRef.current.children);
         const itemCount = originalItems.length;
         
+        // Only clone if we don't have many items
         if (itemCount < 10 && itemCount > 0) {
           originalItems.forEach(item => {
             const clone = (item as HTMLElement).cloneNode(true) as HTMLElement;
@@ -172,32 +295,14 @@ export const ServiceChoose = () => {
           });
         }
         
-        const totalWidth = scrollRef.current.scrollWidth;
-        const visibleWidth = scrollContainerRef.current.offsetWidth;
-        
-        if (totalWidth > visibleWidth) {
-          gsap.fromTo(
-            scrollRef.current,
-            { x: 0 },
-            { 
-              x: `-${Math.min(totalWidth / 2, 2000)}px`,
-              duration: Math.min(totalWidth / 80, 30),
-              ease: "linear",
-              repeat: -1,
-              repeatRefresh: true,
-              onRepeat: () => {
-                if (scrollRef.current) {
-                  gsap.set(scrollRef.current, { x: "0" });
-                }
-              }
-            }
-          );
-        }
+        // Start the animation
+        startScrollAnimation();
       } else {
+        // Reset scroll position if not animating
         gsap.set(scrollRef.current, { x: 0 });
       }
     } catch (error) {
-      console.error("Error in scroll animation:", error);
+      console.error("Error in scroll animation setup:", error);
       if (scrollRef.current) {
         gsap.set(scrollRef.current, { x: 0 });
       }
@@ -246,20 +351,20 @@ export const ServiceChoose = () => {
         }`}></div>
       </div>
 
-      <div className="container mx-auto px-4 max-w-7xl flex-grow flex flex-col relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 max-w-7xl flex-grow flex flex-col relative z-10 py-4 md:py-8">
         <div className={`${
           theme === 'dark'
             ? "bg-black/40 backdrop-blur-xl border-zinc-800/50"
             : "bg-white/60 backdrop-blur-xl border-gray-200/70"
         } rounded-3xl shadow-2xl overflow-hidden flex flex-col flex-grow border`}>
           {/* Header with search and filters */}
-          <div className="p-6">
-            <h1 className={`text-3xl md:text-4xl font-bold text-center mb-2 ${
+          <div className="p-4 sm:p-6">
+            <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-2 ${
               theme === 'dark' ? "text-white" : "text-gray-900"
             }`}>
               Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">Service</span>
             </h1>
-            <p className={`text-center text-sm mb-6 ${
+            <p className={`text-center text-sm mb-4 sm:mb-6 ${
               theme === 'dark' ? "text-zinc-400" : "text-gray-600"
             }`}>Select from our wide range of professional services</p>
             
@@ -268,7 +373,7 @@ export const ServiceChoose = () => {
                 theme === 'dark'
                   ? "bg-black/50 backdrop-blur-sm border-zinc-800/50"
                   : "bg-white/80 backdrop-blur-sm border-gray-200"
-              } p-4 rounded-2xl border shadow-lg`}>
+              } p-3 sm:p-4 rounded-2xl border shadow-lg`}>
                 <div className="relative">
                   <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
                     theme === 'dark' ? "text-zinc-400" : "text-gray-400"
@@ -296,10 +401,10 @@ export const ServiceChoose = () => {
                   )}
                 </div>
                 
-                <div className="flex mt-4 relative overflow-x-auto hide-scrollbar pb-2">
+                <div className="flex mt-3 sm:mt-4 relative overflow-x-auto hide-scrollbar pb-2">
                   <button 
                     onClick={() => handleCategoryChange("All")}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex-shrink-0 ${
+                    className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex-shrink-0 ${
                       selectedCategory === "All" 
                         ? "bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-lg" 
                         : theme === 'dark'
@@ -310,12 +415,12 @@ export const ServiceChoose = () => {
                     All Services
                   </button>
                   
-                  <div className="overflow-x-auto flex gap-2 ml-2 hide-scrollbar">
+                  <div className="overflow-x-auto flex gap-1 sm:gap-2 ml-1 sm:ml-2 hide-scrollbar">
                     {serviceCategories.map(category => (
                       <button
                         key={category}
                         onClick={() => handleCategoryChange(category)}
-                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
+                        className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
                           selectedCategory === category 
                             ? "bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-lg" 
                             : theme === 'dark'
@@ -329,7 +434,7 @@ export const ServiceChoose = () => {
                   </div>
                 </div>
                 
-                <div className="mt-3 text-center">
+                <div className="mt-2 sm:mt-3 text-center">
                   <span className={`text-xs ${theme === 'dark' ? "text-zinc-400" : "text-gray-500"}`}>
                     {isLoading ? (
                       <span className="flex items-center justify-center gap-2">
@@ -346,7 +451,7 @@ export const ServiceChoose = () => {
           </div>
           
           {/* Services display area */}
-          <div className="p-6 flex-grow overflow-hidden">
+          <div className="p-4 sm:p-6 flex-grow overflow-hidden">
             {isLoading ? (
               <div className="flex justify-center items-center h-32">
                 <div className="w-8 h-8 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></div>
@@ -364,7 +469,7 @@ export const ServiceChoose = () => {
                   >
                     <div 
                       ref={scrollRef}
-                      className="flex gap-6 py-4"
+                      className="flex flex-wrap md:flex-nowrap gap-4 sm:gap-6 py-4 justify-center md:justify-start"
                       style={{ willChange: 'transform' }}
                     >
                       {filteredServices.map((service, index) => {
@@ -379,7 +484,7 @@ export const ServiceChoose = () => {
                                 ? "bg-black/40 backdrop-blur-sm"
                                 : "bg-white/70 backdrop-blur-sm"
                             } rounded-2xl shadow-lg hover:shadow-xl transition-all border
-                              flex flex-col w-[280px] h-[320px] flex-shrink-0 group
+                              flex flex-col w-full sm:w-[240px] md:w-[280px] h-[280px] sm:h-[320px] flex-shrink-0 group
                               ${isMatchedCategory ? 
                                 "border-amber-500/50 ring-2 ring-amber-500/20" 
                                 : theme === 'dark' 
@@ -389,28 +494,30 @@ export const ServiceChoose = () => {
                             style={{
                               transform: isMatchedCategory ? "translateY(-5px)" : "none"
                             }}
+                            onMouseEnter={pauseScrollAnimation}
+                            onMouseLeave={resumeScrollAnimation}
                           >
-                            <div className="p-6 flex flex-col items-center justify-between h-full">
+                            <div className="p-4 sm:p-6 flex flex-col items-center justify-between h-full">
                               <div className="flex flex-col items-center w-full">
-                                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg mb-4 group-hover:scale-110 transition-transform">
+                                <div className="w-16 sm:w-20 h-16 sm:h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
                                   {(() => {
                                     const IconComponent = getIconComponent(service.name);
-                                    return <IconComponent size={28} className="text-white" />;
+                                    return <IconComponent size={24} className="text-white" />;
                                   })()}
                                 </div>
-                                <h3 className={`text-xl font-semibold mb-2 text-center group-hover:text-amber-500 transition-colors ${
+                                <h3 className={`text-lg sm:text-xl font-semibold mb-2 text-center group-hover:text-amber-500 transition-colors line-clamp-2 ${
                                   theme === 'dark' ? "text-white" : "text-gray-900"
                                 }`}>
                                   {searchQuery ? highlightMatch(service.name, searchQuery) : service.name}
                                 </h3>
-                                <p className={`text-center text-sm mb-4 line-clamp-2 w-full ${
+                                <p className={`text-center text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 w-full ${
                                   theme === 'dark' ? "text-zinc-400" : "text-gray-600"
                                 }`}>
                                   {searchQuery && service.description
                                     ? highlightMatch(service.description, searchQuery)
                                     : (service.description || "Professional service available on demand")}
                                 </p>
-                                <span className={`px-3 py-1 rounded-full text-xs mb-4
+                                <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs mb-3 sm:mb-4
                                   ${isMatchedCategory 
                                     ? "bg-amber-500/20 text-amber-500 font-medium" 
                                     : theme === 'dark'
@@ -423,7 +530,7 @@ export const ServiceChoose = () => {
                               
                               <Button 
                                 className={`w-full font-medium rounded-xl 
-                                shadow-md hover:shadow-lg transition-all mt-auto py-2.5 h-auto text-sm
+                                shadow-md hover:shadow-lg transition-all mt-auto py-2 sm:py-2.5 h-auto text-xs sm:text-sm
                                 ${isMatchedCategory 
                                   ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black" 
                                   : theme === 'dark'
@@ -445,16 +552,16 @@ export const ServiceChoose = () => {
                     theme === 'dark'
                       ? "bg-black/40 backdrop-blur-sm border-zinc-800/50"
                       : "bg-white/70 backdrop-blur-sm border-gray-200"
-                  } p-8 rounded-2xl text-center border`}>
-                    <div className={`text-xl font-medium mb-2 ${
+                  } p-6 sm:p-8 rounded-2xl text-center border`}>
+                    <div className={`text-lg sm:text-xl font-medium mb-2 ${
                       theme === 'dark' ? "text-white" : "text-gray-900"
                     }`}>No matching services found</div>
-                    <p className={`text-sm mb-6 ${
+                    <p className={`text-xs sm:text-sm mb-4 sm:mb-6 ${
                       theme === 'dark' ? "text-zinc-400" : "text-gray-600"
                     }`}>Try adjusting your search or category filters</p>
                     <div className="flex gap-2 justify-center">
                       <Button 
-                        className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black py-2.5 h-auto text-sm rounded-xl"
+                        className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black py-2 sm:py-2.5 h-auto text-xs sm:text-sm rounded-xl"
                         onClick={() => {
                           handleCategoryChange("All");
                           setSearchQuery("");
@@ -483,6 +590,11 @@ styles.innerHTML = `
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+@media (max-width: 768px) {
+  .flex-wrap {
+    justify-content: center;
+  }
 }`;
 document.head.appendChild(styles);
 

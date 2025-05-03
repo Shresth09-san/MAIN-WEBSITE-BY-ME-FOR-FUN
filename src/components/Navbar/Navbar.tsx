@@ -187,7 +187,7 @@ const Navbar = memo(() => {
             </button>
             
             <a
-              href="https://prebooking.d0lt.com/login"
+              href="https://booking.d0lt.com"
               className={`relative overflow-hidden group ${
                 isDarkMode ? 'text-gray-200' : 'text-gray-800'
               }`}
@@ -197,7 +197,7 @@ const Navbar = memo(() => {
             </a>
 
             <a
-              href="https://prebooking.d0lt.com/signup"
+              href="https://booking.d0lt.com"
               className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-red-700 font-medium px-5 py-2 text-sm rounded-full transition-all transform hover:-translate-y-0.5 hover:shadow-lg inline-block"
             >
               Join Us - It's Free
@@ -242,7 +242,7 @@ const Navbar = memo(() => {
             
             <div className="flex flex-col gap-3 px-6 pt-2 pb-4">
               <a
-                href="https://prebooking.d0lt.com/login"
+                href="https://booking.d0lt.com"
                 className={`${
                   isDarkMode 
                     ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700' 
@@ -254,7 +254,7 @@ const Navbar = memo(() => {
               </a>
   
               <a 
-                href="https://prebooking.d0lt.com/signup"
+                href="https://booking.d0lt.com"
                 className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-red-700 text-sm py-2.5 font-medium text-center rounded-md"
                 onClick={() => setIsOpen(false)}
               >
