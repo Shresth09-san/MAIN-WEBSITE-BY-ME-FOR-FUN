@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import Carousel from "./Carousel";
+import { useTheme } from "@/context/ThemeContext";
 
 const testimonials = [
   {
@@ -41,12 +42,16 @@ const companyLogos = [
 ];
 
 export const CompanyTestimonials = () => {
+  const { theme } = useTheme();
+  
   return (
-    <section className="bg-black py-20">
-      <div className="container mx-auto px-4">
+    <section className={theme === 'dark' ? 'bg-black' : 'bg-gray-100'}>
+      <div className="container mx-auto px-4 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-4xl md:text-7xl font-bold text-white ml-8 leading-tight">
+            <h2 className={`text-4xl md:text-7xl font-bold ml-8 leading-tight ${
+              theme === 'dark' ? 'text-white' : 'text-gray-900'
+            }`}>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-500 to-red-500">
                 Offer Quick
               </span>
@@ -60,15 +65,17 @@ export const CompanyTestimonials = () => {
           </div>
           
           <div className="relative">
-            <div className="bg-white rounded-lg p-6 shadow-lg overflow-hidden">
-                <h3 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+            <div className={`rounded-lg p-6 shadow-lg overflow-hidden ${
+              theme === 'dark' ? 'bg-zinc-900 text-white' : 'bg-white text-gray-900'
+            }`}>
+              <h3 className="text-2xl font-bold mb-6 text-center">
                 The best companies Services on DOIT
-                </h3>
-                
-                <div className="mx-auto max-w-3xl">
+              </h3>
+              
+              <div className="mx-auto max-w-3xl">
                 <Carousel slides={testimonials} />
-                </div>
               </div>
+            </div>
           </div>
         </div>
 
@@ -87,8 +94,12 @@ export const CompanyTestimonials = () => {
                 }}
               >
                 <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-red-500 rounded-lg blur opacity-0 group-hover:opacity-75 transition duration-300"></div>
-                <div className="relative px-4 py-2 bg-gray-800 rounded-lg transform transition-all duration-300 group-hover:scale-110">
-                  <span className="text-white text-sm group-hover:text-yellow-300 transition-colors duration-300">{company.name}</span>
+                <div className={`relative px-4 py-2 rounded-lg transform transition-all duration-300 group-hover:scale-110 ${
+                  theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
+                }`}>
+                  <span className={`text-sm group-hover:text-yellow-300 transition-colors duration-300 ${
+                    theme === 'dark' ? 'text-white' : 'text-gray-900'
+                  }`}>{company.name}</span>
                 </div>
               </div>
             ))}
@@ -109,8 +120,7 @@ export const CompanyTestimonials = () => {
             }
           `}</style>
         </div>
-        </div>
-
+      </div>
     </section>
   );
 };

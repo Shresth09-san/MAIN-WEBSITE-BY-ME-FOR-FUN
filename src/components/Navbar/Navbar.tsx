@@ -5,14 +5,12 @@ import { Link as ScrollLink } from "react-scroll";
 import axios from "axios";
 import Logo from "@/assests/logoR.png";
 import { Link } from "react-router-dom";
+import { useTheme } from "@/context/ThemeContext";
 
 const Navbar = memo(() => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setIsScrolled] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    return savedTheme === "dark";
-  });
+  const { isDarkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
@@ -35,20 +33,6 @@ const Navbar = memo(() => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
-
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -64,9 +48,13 @@ const Navbar = memo(() => {
 
   const renderNavLink = (link, index, isMobile = false) => {
     const className = isMobile 
-      ? "text-gray-700 hover:text-red-500 transition-colors w-full text-center py-2.5 text-sm font-medium border-b border-gray-100 last:border-0"
+      ? `${
+          isDarkMode 
+            ? 'text-gray-200 hover:text-red-300 border-gray-700' 
+            : 'text-gray-800 hover:text-red-600 border-gray-200'
+        } transition-colors w-full text-center py-2.5 text-sm font-medium border-b last:border-0`
       : `relative px-2 py-1 font-medium text-sm cursor-pointer group ${
-          scrolled ? 'text-gray-800 dark:text-gray-300' : 'text-white/90'
+          isDarkMode ? 'text-gray-200' : 'text-gray-800'
         }`;
 
     if (link.type === "home") {
@@ -84,7 +72,7 @@ const Navbar = memo(() => {
           <span className="relative z-10">{link.title}</span>
           {!isMobile && (
             <>
-              <span className="absolute inset-0 bg-red-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0 opacity-0 group-hover:opacity-100"></span>
+              <span className={`absolute inset-0 ${isDarkMode ? 'bg-red-900/30' : 'bg-red-100'} rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0 opacity-0 group-hover:opacity-100`}></span>
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
             </>
           )}
@@ -99,7 +87,7 @@ const Navbar = memo(() => {
           <span className="relative z-10">{link.title}</span>
           {!isMobile && (
             <>
-              <span className="absolute inset-0 bg-red-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0 opacity-0 group-hover:opacity-100"></span>
+              <span className={`absolute inset-0 ${isDarkMode ? 'bg-red-900/30' : 'bg-red-100'} rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0 opacity-0 group-hover:opacity-100`}></span>
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
             </>
           )}
@@ -118,7 +106,7 @@ const Navbar = memo(() => {
           <span className="relative z-10">{link.title}</span>
           {!isMobile && (
             <>
-              <span className="absolute inset-0 bg-red-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0 opacity-0 group-hover:opacity-100"></span>
+              <span className={`absolute inset-0 ${isDarkMode ? 'bg-red-900/30' : 'bg-red-100'} rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0 opacity-0 group-hover:opacity-100`}></span>
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
             </>
           )}
@@ -140,7 +128,7 @@ const Navbar = memo(() => {
         <span className="relative z-10">{link.title}</span>
         {!isMobile && (
           <>
-            <span className="absolute inset-0 bg-red-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0 opacity-0 group-hover:opacity-100"></span>
+            <span className={`absolute inset-0 ${isDarkMode ? 'bg-red-900/30' : 'bg-red-100'} rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0 opacity-0 group-hover:opacity-100`}></span>
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
           </>
         )}
@@ -155,7 +143,7 @@ const Navbar = memo(() => {
         <span className="relative z-10">{link.title}</span>
         {!isMobile && (
           <>
-            <span className="absolute inset-0 bg-red-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0 opacity-0 group-hover:opacity-100"></span>
+            <span className={`absolute inset-0 ${isDarkMode ? 'bg-red-900/30' : 'bg-red-100'} rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0 opacity-0 group-hover:opacity-100`}></span>
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
           </>
         )}
@@ -165,7 +153,13 @@ const Navbar = memo(() => {
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${
-      scrolled ? 'bg-white dark:bg-gray-900 shadow-md py-2' : 'bg-transparent py-3 shadow-md'
+      scrolled 
+        ? isDarkMode 
+          ? 'bg-gray-900/80 backdrop-blur-md border-b border-gray-700 shadow-lg py-2' 
+          : 'bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-lg py-2'
+        : isDarkMode
+          ? 'bg-gray-900/50 backdrop-blur-sm py-3' 
+          : 'bg-white/50 backdrop-blur-sm py-3'
     }`}>
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-10">
@@ -183,7 +177,9 @@ const Navbar = memo(() => {
             <button 
               onClick={toggleTheme}
               className={`p-1.5 rounded-full ${
-                scrolled ? 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800' : 'text-white hover:bg-white/10'
+                isDarkMode 
+                  ? 'text-gray-300 hover:bg-gray-700' 
+                  : 'text-gray-700 hover:bg-gray-200'
               } transition-colors`}
               aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
             >
@@ -192,11 +188,11 @@ const Navbar = memo(() => {
             
             <a
               href="https://prebooking.d0lt.com/login"
-              className="relative overflow-hidden group"
+              className={`relative overflow-hidden group ${
+                isDarkMode ? 'text-gray-200' : 'text-gray-800'
+              }`}
             >
-              <span className={`relative z-10 font-bold text-sm ${
-                scrolled ? 'text-red-600 dark:text-red-400' : 'text-white'
-              }`}>Log in</span>
+              <span className="relative z-10 font-bold text-sm">Log in</span>
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
             </a>
 
@@ -212,7 +208,9 @@ const Navbar = memo(() => {
             <button 
               onClick={toggleTheme}
               className={`p-1.5 rounded-full mr-2 ${
-                scrolled ? 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800' : 'text-white hover:bg-white/10'
+                isDarkMode 
+                  ? 'text-gray-300 hover:bg-gray-700' 
+                  : 'text-gray-700 hover:bg-gray-200'
               } transition-colors`}
               aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
             >
@@ -221,7 +219,9 @@ const Navbar = memo(() => {
             
             <button
               className={`p-1.5 rounded-md transition-colors ${
-                scrolled ? 'text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20' : 'text-white hover:bg-white/10'
+                isDarkMode 
+                  ? 'text-gray-300 hover:bg-gray-700' 
+                  : 'text-gray-700 hover:bg-gray-200'
               }`}
               onClick={() => setIsOpen(!isOpen)}
             >
@@ -231,7 +231,11 @@ const Navbar = memo(() => {
         </div>
 
         {isOpen && (
-          <div className="lg:hidden py-4 animate-fade-in flex flex-col space-y-4 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 rounded-b-lg shadow-lg">
+          <div className={`lg:hidden py-4 animate-fade-in flex flex-col space-y-4 ${
+            isDarkMode 
+              ? 'bg-gray-900/95 border-t border-gray-700' 
+              : 'bg-white/95 border-t border-gray-200'
+          } backdrop-blur-lg rounded-b-lg shadow-lg`}>
             <div className="flex flex-col space-y-1 items-center pt-2">
               {navLinks.map((link, index) => renderNavLink(link, index, true))}
             </div>
@@ -239,7 +243,11 @@ const Navbar = memo(() => {
             <div className="flex flex-col gap-3 px-6 pt-2 pb-4">
               <a
                 href="https://prebooking.d0lt.com/login"
-                className="bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 border border-red-500 dark:border-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm py-2.5 font-medium text-center rounded-md"
+                className={`${
+                  isDarkMode 
+                    ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700' 
+                    : 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200'
+                } border transition-colors text-sm py-2.5 font-medium text-center rounded-md`}
                 onClick={() => setIsOpen(false)}
               >
                 Log in

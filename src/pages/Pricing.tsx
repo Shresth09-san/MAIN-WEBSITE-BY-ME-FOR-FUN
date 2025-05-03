@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function PricingCards() {
     const cardsRef = useRef([]);
     const containerRef = useRef(null);
     const [isAnnual, setIsAnnual] = useState(false);
+    const { theme } = useTheme();
 
     const plans = [
         {
@@ -101,19 +103,33 @@ export default function PricingCards() {
     };
 
     return (
-        <div ref={containerRef} className="min-h-screen bg-black flex flex-col items-center py-16 px-4 sm:px-8">
-            <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 drop-shadow-lg mb-8 text-center">
+        <div ref={containerRef} className={`min-h-screen flex flex-col items-center py-16 px-4 sm:px-8 ${
+            theme === 'dark' ? 'bg-black' : 'bg-gray-100'
+        }`}>
+            <h1 className={`text-5xl font-bold drop-shadow-lg mb-8 text-center ${
+                theme === 'dark' 
+                    ? 'text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400' 
+                    : 'text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600'
+            }`}>
                 Our Services & Pricing
             </h1>
-            <p className="text-gray-400 text-lg mb-6 text-center max-w-2xl">
+            <p className={`text-lg mb-6 text-center max-w-2xl ${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+            }`}>
                 Choose from our comprehensive range of services including cleaning, washing, construction, and repair solutions
             </p>
             
             <div className="flex items-center mb-10">
-                <span className={`mr-3 text-lg ${!isAnnual ? 'text-white' : 'text-gray-400'}`}>Standard</span>
+                <span className={`mr-3 text-lg ${
+                    !isAnnual 
+                        ? (theme === 'dark' ? 'text-white' : 'text-gray-900') 
+                        : (theme === 'dark' ? 'text-gray-400' : 'text-gray-500')
+                }`}>Standard</span>
                 <button 
                     onClick={togglePricing}
-                    className="relative inline-flex items-center h-8 rounded-full w-14 bg-gray-800 transition-colors"
+                    className={`relative inline-flex items-center h-8 rounded-full w-14 transition-colors ${
+                        theme === 'dark' ? 'bg-gray-800' : 'bg-gray-300'
+                    }`}
                 >
                     <span 
                         className={`inline-block w-6 h-6 transform bg-white rounded-full transition-transform ${
@@ -121,8 +137,12 @@ export default function PricingCards() {
                         }`} 
                     />
                 </button>
-                <span className={`ml-3 text-lg ${isAnnual ? 'text-white' : 'text-gray-400'}`}>
-                    Annual <span className="text-gray-400 text-sm">(Save up to 20%)</span>
+                <span className={`ml-3 text-lg ${
+                    isAnnual 
+                        ? (theme === 'dark' ? 'text-white' : 'text-gray-900') 
+                        : (theme === 'dark' ? 'text-gray-400' : 'text-gray-500')
+                }`}>
+                    Annual <span className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>(Save up to 20%)</span>
                 </span>
             </div>
 
@@ -131,24 +151,42 @@ export default function PricingCards() {
                     <div
                         key={index}
                         ref={(el) => (cardsRef.current[index] = el)}
-                        className={`relative bg-gradient-to-br ${plan.color} text-white p-6 rounded-2xl shadow-lg overflow-hidden transition-transform transform hover:scale-105 border border-gray-800`}
+                        className={`relative ${
+                            theme === 'dark'
+                                ? `bg-gradient-to-br ${plan.color} text-white border-gray-800`
+                                : 'bg-white text-gray-900 border-gray-200'
+                        } p-6 rounded-2xl shadow-lg overflow-hidden transition-transform transform hover:scale-105 border`}
                     >
                         {plan.popular && (
-                            <div className="absolute top-2 right-2 bg-gray-800 text-white px-2 py-1 text-xs font-bold rounded-md shadow-lg border border-gray-700">
+                            <div className={`absolute top-2 right-2 px-2 py-1 text-xs font-bold rounded-md shadow-lg ${
+                                theme === 'dark'
+                                    ? 'bg-gray-800 text-white border border-gray-700'
+                                    : 'bg-amber-500 text-white'
+                            }`}>
                                 MOST POPULAR
                             </div>
                         )}
-                        <h2 className="text-2xl font-bold mb-4 text-white">{plan.name}</h2>
-                        <p className="text-3xl font-extrabold mb-4 text-white">{plan.price}</p>
+                        <h2 className={`text-2xl font-bold mb-4 ${
+                            theme === 'dark' ? 'text-white' : 'text-gray-900'
+                        }`}>{plan.name}</h2>
+                        <p className={`text-3xl font-extrabold mb-4 ${
+                            theme === 'dark' ? 'text-white' : 'text-gray-900'
+                        }`}>{plan.price}</p>
                         <ul className="space-y-3 mb-6">
                             {plan.features.map((feature, i) => (
-                                <li key={i} className="flex items-center gap-2 text-gray-300">
-                                    <span className="text-gray-400">✔</span>
+                                <li key={i} className={`flex items-center gap-2 ${
+                                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                                }`}>
+                                    <span className={theme === 'dark' ? "text-gray-400" : "text-amber-500"}>✔</span>
                                     {feature}
                                 </li>
                             ))}
                         </ul>
-                        <button className="w-full bg-gray-800 text-white py-2 rounded-lg font-bold hover:bg-gray-700 transition-all border border-gray-700">
+                        <button className={`w-full py-2 rounded-lg font-bold transition-all ${
+                            theme === 'dark'
+                                ? 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
+                                : 'bg-amber-500 text-white hover:bg-amber-600'
+                        }`}>
                             Book Now
                         </button>
                     </div>

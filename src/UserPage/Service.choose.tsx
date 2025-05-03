@@ -13,6 +13,7 @@ import {
   Home, Brush, Cog, Car, Smartphone, Calendar,
   Shirt, Settings, Lock, Search, X
 } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -61,6 +62,7 @@ export const ServiceChoose = () => {
   const [isLoading, setIsLoading] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
 
   const isAuthenticated = async () => {
     const token = Cookies.get('token');
@@ -218,40 +220,76 @@ export const ServiceChoose = () => {
   };
 
   return (
-    <div className="min-h-screen bg-transparent flex flex-col overflow-hidden relative">
+    <div className={
+      theme === 'dark' 
+        ? "min-h-screen bg-zinc-900 text-white flex flex-col overflow-hidden relative"
+        : "min-h-screen bg-gray-100 text-zinc-900 flex flex-col overflow-hidden relative"
+    }>
       {/* Background gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-900 to-black opacity-90"></div>
+      <div className={`absolute inset-0 ${
+        theme === 'dark' 
+          ? "bg-gradient-to-b from-black via-zinc-900 to-black opacity-90" 
+          : "bg-gradient-to-b from-white via-gray-100 to-white opacity-80"
+      }`}></div>
       
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-r from-orange-500/10 to-amber-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className={`absolute -top-1/2 -left-1/2 w-full h-full rounded-full blur-3xl animate-pulse ${
+          theme === 'dark'
+            ? "bg-gradient-to-r from-amber-500/10 to-orange-500/10"
+            : "bg-gradient-to-r from-amber-500/5 to-orange-500/5"
+        }`}></div>
+        <div className={`absolute -bottom-1/2 -right-1/2 w-full h-full rounded-full blur-3xl animate-pulse ${
+          theme === 'dark'
+            ? "bg-gradient-to-r from-orange-500/10 to-amber-500/10"
+            : "bg-gradient-to-r from-orange-500/5 to-amber-500/5"
+        }`}></div>
       </div>
 
       <div className="container mx-auto px-4 max-w-7xl flex-grow flex flex-col relative z-10">
-        <div className="bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden flex flex-col flex-grow border border-zinc-800/50">
+        <div className={`${
+          theme === 'dark'
+            ? "bg-black/40 backdrop-blur-xl border-zinc-800/50"
+            : "bg-white/60 backdrop-blur-xl border-gray-200/70"
+        } rounded-3xl shadow-2xl overflow-hidden flex flex-col flex-grow border`}>
           {/* Header with search and filters */}
           <div className="p-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-white text-center mb-2">
+            <h1 className={`text-3xl md:text-4xl font-bold text-center mb-2 ${
+              theme === 'dark' ? "text-white" : "text-gray-900"
+            }`}>
               Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">Service</span>
             </h1>
-            <p className="text-zinc-400 text-center text-sm mb-6">Select from our wide range of professional services</p>
+            <p className={`text-center text-sm mb-6 ${
+              theme === 'dark' ? "text-zinc-400" : "text-gray-600"
+            }`}>Select from our wide range of professional services</p>
             
             <div className="max-w-3xl mx-auto">
-              <div className="bg-black/50 backdrop-blur-sm p-4 rounded-2xl border border-zinc-800/50 shadow-lg">
+              <div className={`${
+                theme === 'dark'
+                  ? "bg-black/50 backdrop-blur-sm border-zinc-800/50"
+                  : "bg-white/80 backdrop-blur-sm border-gray-200"
+              } p-4 rounded-2xl border shadow-lg`}>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400 w-5 h-5" />
+                  <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
+                    theme === 'dark' ? "text-zinc-400" : "text-gray-400"
+                  }`} />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     placeholder="Search services..."
-                    className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-transparent transition-all"
+                    className={`w-full rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-transparent transition-all ${
+                      theme === 'dark'
+                        ? "bg-zinc-900/50 border-zinc-800 text-white placeholder-zinc-500"
+                        : "bg-gray-100 border-gray-200 text-gray-900 placeholder-gray-500"
+                    }`}
                   />
                   {searchQuery && (
                     <button
                       onClick={() => handleSearchChange("")}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-white transition-colors"
+                      className={`absolute right-3 top-1/2 transform -translate-y-1/2 hover:text-amber-500 transition-colors ${
+                        theme === 'dark' ? "text-zinc-400" : "text-gray-400"
+                      }`}
                     >
                       <X className="w-5 h-5" />
                     </button>
@@ -261,10 +299,13 @@ export const ServiceChoose = () => {
                 <div className="flex mt-4 relative overflow-x-auto hide-scrollbar pb-2">
                   <button 
                     onClick={() => handleCategoryChange("All")}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex-shrink-0
-                      ${selectedCategory === "All" 
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex-shrink-0 ${
+                      selectedCategory === "All" 
                         ? "bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-lg" 
-                        : "bg-zinc-900/50 text-white hover:bg-zinc-800/50 border border-zinc-800"}`}
+                        : theme === 'dark'
+                          ? "bg-zinc-900/50 text-white hover:bg-zinc-800/50 border border-zinc-800"
+                          : "bg-gray-200 text-gray-900 hover:bg-gray-300 border border-gray-200"
+                    }`}
                   >
                     All Services
                   </button>
@@ -274,10 +315,13 @@ export const ServiceChoose = () => {
                       <button
                         key={category}
                         onClick={() => handleCategoryChange(category)}
-                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap flex-shrink-0
-                          ${selectedCategory === category 
+                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
+                          selectedCategory === category 
                             ? "bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-lg" 
-                            : "bg-zinc-900/50 text-white hover:bg-zinc-800/50 border border-zinc-800"}`}
+                            : theme === 'dark'
+                              ? "bg-zinc-900/50 text-white hover:bg-zinc-800/50 border border-zinc-800"
+                              : "bg-gray-200 text-gray-900 hover:bg-gray-300 border border-gray-200"
+                        }`}
                       >
                         {category}
                       </button>
@@ -286,14 +330,14 @@ export const ServiceChoose = () => {
                 </div>
                 
                 <div className="mt-3 text-center">
-                  <span className="text-zinc-400 text-xs">
+                  <span className={`text-xs ${theme === 'dark' ? "text-zinc-400" : "text-gray-500"}`}>
                     {isLoading ? (
                       <span className="flex items-center justify-center gap-2">
                         <div className="w-3 h-3 border-2 border-amber-500 rounded-full animate-spin"></div>
                         Filtering services...
                       </span>
                     ) : (
-                      <>Found <span className="font-semibold text-white">{filteredServices.length}</span> service{filteredServices.length !== 1 ? 's' : ''}</>
+                      <>Found <span className={`font-semibold ${theme === 'dark' ? "text-white" : "text-gray-900"}`}>{filteredServices.length}</span> service{filteredServices.length !== 1 ? 's' : ''}</>
                     )}
                   </span>
                 </div>
@@ -330,10 +374,18 @@ export const ServiceChoose = () => {
                         return (
                           <div
                             key={`${service.id || service.name}-${index}`}
-                            className={`bg-black/40 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all border
+                            className={`${
+                              theme === 'dark'
+                                ? "bg-black/40 backdrop-blur-sm"
+                                : "bg-white/70 backdrop-blur-sm"
+                            } rounded-2xl shadow-lg hover:shadow-xl transition-all border
                               flex flex-col w-[280px] h-[320px] flex-shrink-0 group
                               ${isMatchedCategory ? 
-                                "border-amber-500/50 ring-2 ring-amber-500/20" : "border-zinc-800/50"}`}
+                                "border-amber-500/50 ring-2 ring-amber-500/20" 
+                                : theme === 'dark' 
+                                  ? "border-zinc-800/50"
+                                  : "border-gray-200"
+                              }`}
                             style={{
                               transform: isMatchedCategory ? "translateY(-5px)" : "none"
                             }}
@@ -346,17 +398,25 @@ export const ServiceChoose = () => {
                                     return <IconComponent size={28} className="text-white" />;
                                   })()}
                                 </div>
-                                <h3 className="text-xl font-semibold text-white mb-2 text-center group-hover:text-amber-500 transition-colors">
+                                <h3 className={`text-xl font-semibold mb-2 text-center group-hover:text-amber-500 transition-colors ${
+                                  theme === 'dark' ? "text-white" : "text-gray-900"
+                                }`}>
                                   {searchQuery ? highlightMatch(service.name, searchQuery) : service.name}
                                 </h3>
-                                <p className="text-zinc-400 text-center text-sm mb-4 line-clamp-2 w-full">
+                                <p className={`text-center text-sm mb-4 line-clamp-2 w-full ${
+                                  theme === 'dark' ? "text-zinc-400" : "text-gray-600"
+                                }`}>
                                   {searchQuery && service.description
                                     ? highlightMatch(service.description, searchQuery)
                                     : (service.description || "Professional service available on demand")}
                                 </p>
                                 <span className={`px-3 py-1 rounded-full text-xs mb-4
-                                  ${isMatchedCategory ?
-                                    "bg-amber-500/20 text-amber-500 font-medium" : "bg-zinc-800/50 text-zinc-400"}`}>
+                                  ${isMatchedCategory 
+                                    ? "bg-amber-500/20 text-amber-500 font-medium" 
+                                    : theme === 'dark'
+                                      ? "bg-zinc-800/50 text-zinc-400"
+                                      : "bg-gray-200/70 text-gray-600"
+                                  }`}>
                                   {serviceCategory}
                                 </span>
                               </div>
@@ -364,9 +424,12 @@ export const ServiceChoose = () => {
                               <Button 
                                 className={`w-full font-medium rounded-xl 
                                 shadow-md hover:shadow-lg transition-all mt-auto py-2.5 h-auto text-sm
-                                ${isMatchedCategory ? 
-                                  "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black" : 
-                                  "bg-zinc-900/50 hover:bg-zinc-800/50 text-white border border-zinc-800"}`}
+                                ${isMatchedCategory 
+                                  ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black" 
+                                  : theme === 'dark'
+                                    ? "bg-zinc-900/50 hover:bg-zinc-800/50 text-white border border-zinc-800"
+                                    : "bg-gray-200 hover:bg-gray-300 text-gray-900 border border-gray-300"
+                                }`}
                                 onClick={redirectToPrebooking}
                               >
                                 {getSubservicesForService(service.name).length === 0 ? 'Request Service' : 'Select Options'}
@@ -378,9 +441,17 @@ export const ServiceChoose = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-black/40 backdrop-blur-sm p-8 rounded-2xl text-center border border-zinc-800/50">
-                    <div className="text-white text-xl font-medium mb-2">No matching services found</div>
-                    <p className="text-zinc-400 text-sm mb-6">Try adjusting your search or category filters</p>
+                  <div className={`${
+                    theme === 'dark'
+                      ? "bg-black/40 backdrop-blur-sm border-zinc-800/50"
+                      : "bg-white/70 backdrop-blur-sm border-gray-200"
+                  } p-8 rounded-2xl text-center border`}>
+                    <div className={`text-xl font-medium mb-2 ${
+                      theme === 'dark' ? "text-white" : "text-gray-900"
+                    }`}>No matching services found</div>
+                    <p className={`text-sm mb-6 ${
+                      theme === 'dark' ? "text-zinc-400" : "text-gray-600"
+                    }`}>Try adjusting your search or category filters</p>
                     <div className="flex gap-2 justify-center">
                       <Button 
                         className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black py-2.5 h-auto text-sm rounded-xl"

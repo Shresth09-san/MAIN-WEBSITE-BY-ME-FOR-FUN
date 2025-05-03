@@ -2,12 +2,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { LoadingProvider } from "@/context/LoadingContext";
 import Loader from "@/components/ui/loader";
 import { Suspense, useState, useEffect } from "react";
+import Navbar from "@/components/Navbar/Navbar";
+import { ThemeProvider } from "./context/ThemeContext";
 
 // Direct imports instead of lazy loading
 import Index from "./pages/Index";
@@ -38,25 +40,28 @@ const App = () => {
   }
 
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <LoadingProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Suspense fallback={<Loader />}>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="*" element={<NotFound />} />
-                  <Route path="/coming-soon" element={<ComingSoon />} />
-                </Routes>
-              </Suspense>
-            </BrowserRouter>
-          </LoadingProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </Provider>
+    <ThemeProvider>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <LoadingProvider>
+              <Toaster />
+              <Sonner />
+              <Router>
+                <Navbar />
+                <Suspense fallback={<Loader />}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="*" element={<NotFound />} />
+                    <Route path="/coming-soon" element={<ComingSoon />} />
+                  </Routes>
+                </Suspense>
+              </Router>
+            </LoadingProvider>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </Provider>
+    </ThemeProvider>
   );
 };
 

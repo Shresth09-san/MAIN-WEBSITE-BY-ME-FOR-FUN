@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "@/context/ThemeContext";
 import { 
   Wrench, Plug, Hammer, PaintBucket, Shield, 
   Home, Brush, Cog, Car, Smartphone, Calendar,
@@ -9,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 // Images from public directory can be referenced directly by path
 const houseImage = "/house.png"; // Assuming house.png is in the public directory
-
 
 const services = [
   { icon: Home, title: "CLEANING SERVICE", description: "Professional cleaning" },
@@ -50,13 +50,19 @@ const frequentlySearched = [
 export const Services = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const { theme } = useTheme();
 
   const filteredServices = services.filter(service => 
     searchQuery === "" || service.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const bgColor = theme === 'dark' ? 'bg-black' : 'bg-gray-100';
+  const textColor = theme === 'dark' ? 'text-white' : 'text-gray-900';
+  const cardBg = theme === 'dark' ? 'bg-zinc-900' : 'bg-white';
+  const muted = theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600';
+
   return (
-    <section id="services" className="min-h-screen bg-black py-12 overflow-hidden">
+    <section id="services" className={`min-h-screen ${bgColor} py-12 overflow-hidden`}>
       <div className="container mx-auto px-4">
         {/* Hero section with heading and 3D model side by side */}
         <div className="flex flex-col lg:flex-row items-center justify-between mb-16 relative">
@@ -76,10 +82,10 @@ export const Services = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
+              <h1 className={`text-4xl md:text-6xl font-bold leading-tight mb-6 ${textColor}`}>
                 What do you need to <span className="text-amber-500">Fix Today?</span>
               </h1>
-              <p className="text-xl text-zinc-400 max-w-lg mb-8">
+              <p className={`text-xl max-w-lg mb-8 ${muted}`}>
                 Professional services at your fingertips. Find the right expert for any job around your home.
               </p>
               
@@ -87,7 +93,11 @@ export const Services = () => {
                 <Input 
                   type="search" 
                   placeholder="Search services..." 
-                  className="w-full bg-zinc-900 backdrop-blur-sm h-14 pl-12 pr-4 rounded-full shadow-lg border-2 border-amber-500/20 focus:border-amber-500 transition-all text-white"
+                  className={`w-full h-14 pl-12 pr-4 rounded-full shadow-lg border-2 border-amber-500/20 focus:border-amber-500 transition-all ${
+                    theme === 'dark'
+                      ? 'bg-zinc-900 text-white'
+                      : 'bg-white text-gray-900'
+                  }`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -105,8 +115,10 @@ export const Services = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="hidden lg:block w-64"
           >
-            <div className="bg-zinc-900 backdrop-blur-sm rounded-xl p-6 shadow-lg sticky top-20">
-              <h3 className="text-white font-semibold text-lg mb-4 border-b-2 border-amber-500/20 pb-2">
+            <div className={`${cardBg} backdrop-blur-sm rounded-xl p-6 shadow-lg sticky top-20 ${
+              theme === 'dark' ? 'border border-zinc-800' : 'border border-zinc-200'
+            }`}>
+              <h3 className={`font-semibold text-lg mb-4 border-b-2 border-amber-500/20 pb-2 ${textColor}`}>
                 Popular Services
               </h3>
               <div className="space-y-2">
@@ -114,7 +126,11 @@ export const Services = () => {
                   <motion.div
                     key={index}
                     whileHover={{ x: 5 }}
-                    className="flex items-center gap-2 text-zinc-400 hover:text-amber-500 cursor-pointer text-sm transition-colors duration-300 p-2 hover:bg-zinc-800 rounded-lg"
+                    className={`flex items-center gap-2 cursor-pointer text-sm transition-colors duration-300 p-2 ${
+                      theme === 'dark'
+                        ? 'text-zinc-400 hover:text-amber-500 hover:bg-zinc-800'
+                        : 'text-zinc-600 hover:text-amber-500 hover:bg-zinc-100'
+                    } rounded-lg`}
                     onClick={() => setSearchQuery(service)}
                   >
                     <div className="h-1.5 w-1.5 rounded-full bg-amber-500"></div>
@@ -131,9 +147,17 @@ export const Services = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="bg-zinc-900/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg"
+              className={`${
+                theme === 'dark' ? 'bg-zinc-900/80' : 'bg-white/90'
+              } backdrop-blur-sm rounded-2xl p-6 shadow-lg ${
+                theme === 'dark' ? 'border border-zinc-800' : 'border border-zinc-200'
+              }`}
             >
-              <h2 className="text-2xl font-semibold text-white mb-6 border-b border-amber-500/20 pb-3">
+              <h2 className={`text-2xl font-semibold mb-6 border-b pb-3 ${
+                theme === 'dark' 
+                  ? 'text-white border-amber-500/20' 
+                  : 'text-gray-900 border-amber-500/30'
+              }`}>
                 All Services
               </h2>
               
@@ -141,7 +165,11 @@ export const Services = () => {
                 {filteredServices.map((service, index) => (
                   <motion.div
                     key={index}
-                    className="bg-zinc-900 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-64 border border-amber-500/20"
+                    className={`rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-64 ${
+                      theme === 'dark'
+                        ? 'bg-zinc-900 border border-amber-500/20'
+                        : 'bg-white border border-amber-500/10'
+                    }`}
                     whileHover={{ 
                       y: -5,
                       boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
@@ -153,8 +181,10 @@ export const Services = () => {
                       <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-md mb-3">
                         {service.icon && <service.icon size={24} className="text-white" />}
                       </div>
-                      <h3 className="font-semibold text-sm text-white mb-2">{service.title}</h3>
-                      <p className="text-xs text-zinc-400 mb-3">{service.description}</p>
+                      <h3 className={`font-semibold text-sm mb-2 ${textColor}`}>
+                        {service.title}
+                      </h3>
+                      <p className={`text-xs mb-3 ${muted}`}>{service.description}</p>
                     </div>
                     <a 
                       href="https://booking.d0lt.com" 

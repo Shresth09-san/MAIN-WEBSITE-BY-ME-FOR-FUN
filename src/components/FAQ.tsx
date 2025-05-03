@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useTheme } from "@/context/ThemeContext";
 // Import the constants/functions from the new file
 import { faqConstants, faqHelperFunction } from '../utils/faqUtils';
 
 const FAQ: React.FC = () => {
   // State to track which FAQ items are expanded
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const { theme } = useTheme();
   
   // FAQ data array with unique questions
   const faqData = [
@@ -40,7 +42,9 @@ const FAQ: React.FC = () => {
   };
 
   return (
-    <section className="faq-section py-16 px-4 bg-black">
+    <section className={`faq-section py-16 px-4 ${
+      theme === 'dark' ? 'bg-black' : 'bg-gray-100'
+    }`}>
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-amber-600">Frequently Asked Questions</h2>
         
@@ -48,10 +52,16 @@ const FAQ: React.FC = () => {
           {faqData.map((faq, index) => (
             <div 
               key={index} 
-              className="bg-white/20 backdrop-blur-md rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-white/30"
+              className={`rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                theme === 'dark'
+                  ? 'bg-white/20 backdrop-blur-md hover:bg-white/30'
+                  : 'bg-white backdrop-blur-md hover:bg-gray-50 border border-gray-200'
+              }`}
             >
               <button
-                className="w-full text-left p-4 md:p-6 flex items-center justify-between font-medium focus:outline-none"
+                className={`w-full text-left p-4 md:p-6 flex items-center justify-between font-medium focus:outline-none ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`}
                 onClick={() => toggleFAQ(index)}
               >
                 <span className="text-lg">{faq.question}</span>
@@ -63,7 +73,7 @@ const FAQ: React.FC = () => {
               <div 
                 className={`px-4 md:px-6 transition-all duration-300 overflow-hidden ${expandedIndex === index ? 'max-h-96 pb-4 md:pb-6' : 'max-h-0'}`}
               >
-                <p className="text-gray-600">{faq.answer}</p>
+                <p className={theme === 'dark' ? "text-gray-300" : "text-gray-600"}>{faq.answer}</p>
               </div>
             </div>
           ))}
