@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border antialiased;
+  }
+
+  body {
+    @apply bg-background text-foreground font-['Inter'];
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg;
+  }
+  
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+}
+
+.section-padding {
+  @apply py-16 md:py-24;
+}
+
+.container-padding {
+  @apply px-4 md:px-6 lg:px-8;
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  @apply flex gap-6;
+  animation: marquee 30s linear infinite;
+}
+
+.services-wrapper {
+  @apply overflow-x-hidden w-full flex justify-center;
+}
+
+.service-cards-container {
+  @apply flex flex-nowrap w-max relative;
+  animation: marquee 30s linear infinite;
+}
+
+.service-card {
+  @apply flex-shrink-0 mr-6;
+}

@@ -1,0 +1,190 @@
+export const allServices = [
+  {
+    id: 1,
+    name: "Cleaning Services",
+    image: "/icons/cleaning.png",
+    providerType: "Professional Cleaners",
+    subServices: [
+      {
+        id: 101,
+        name: "House Cleaning",
+        image: "/icons/house-cleaning.png",
+        providerType: "Cleaner",
+      },
+      {
+        id: 102,
+        name: "Deep Cleaning",
+        image: "/icons/deep-cleaning.png",
+        providerType: "Deep Cleaner",
+      },
+      {
+        id: 103,
+        name: "Office Cleaning",
+        image: "/icons/office-cleaning.png",
+        providerType: "Office Cleaner",
+      },
+      {
+        id: 104,
+        name: "Carpet Cleaning",
+        image: "/icons/carpet-cleaning.png",
+        providerType: "Carpet Cleaner",
+      },
+      {
+        id: 105,
+        name: "Upholstery Cleaning",
+        image: "/icons/upholstery-cleaning.png",
+        providerType: "Upholstery Cleaner",
+      },
+      {
+        id: 106,
+        name: "Window Cleaning",
+        image: "/icons/window-cleaning.png",
+        providerType: "Window Cleaner",
+      },
+      {
+        id: 107,
+        name: "Post-Renovation Cleaning",
+        image: "/icons/post-renovation.png",
+        providerType: "Post-Renovation Cleaner",
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Plumbing Services",
+    image: "/icons/plumbing.png",
+    providerType: "Plumbers",
+    subServices: [
+      {
+        id: 201,
+        name: "Leak Repairs",
+        image: "/icons/leak-repairs.png",
+        providerType: "Plumber",
+      },
+      {
+        id: 202,
+        name: "Pipe Installation & Replacement",
+        image: "/icons/pipe-installation.png",
+        providerType: "Pipefitter/Plumber",
+      },
+      {
+        id: 203,
+        name: "Faucet & Tap Repairs",
+        image: "/icons/faucet-repair.png",
+        providerType: "Plumber",
+      },
+      {
+        id: 204,
+        name: "Drain Unclogging",
+        image: "/icons/drain-unclogging.png",
+        providerType: "Drain Specialist/Plumber",
+      },
+      {
+        id: 205,
+        name: "Water Heater Installation/Repair",
+        image: "/icons/water-heater.png",
+        providerType: "Water Heater Technician",
+      },
+      {
+        id: 206,
+        name: "Bathroom Fitting Services",
+        image: "/icons/bathroom-fitting.png",
+        providerType: "Bathroom Fitter",
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: "Electrical Services",
+    image: "/icons/electrical.png",
+    providerType: "Electricians",
+    subServices: [
+      {
+        id: 301,
+        name: "Electrical Repairs",
+        image: "/icons/electrical-repairs.png",
+        providerType: "Electrician",
+      },
+      {
+        id: 302,
+        name: "Wiring & Rewiring",
+        image: "/icons/wiring.png",
+        providerType: "Electrician",
+      },
+      {
+        id: 303,
+        name: "Light Fixture Installation",
+        image: "/icons/light-fixture.png",
+        providerType: "Electrician",
+      },
+      {
+        id: 304,
+        name: "Ceiling Fan Installation/Repair",
+        image: "/icons/ceiling-fan.png",
+        providerType: "Electrician",
+      },
+      {
+        id: 305,
+        name: "Electrical Safety Inspections",
+        image: "/icons/electrical-inspection.png",
+        providerType: "Electrical Inspector",
+      },
+      {
+        id: 306,
+        name: "Inverter & Battery Installation",
+        image: "/icons/inverter.png",
+        providerType: "Inverter Technician",
+      },
+    ],
+  },
+  {
+    id: 4,
+    name: "Carpentry Services",
+    image: "/icons/carpentry.png",
+    providerType: "Carpenters",
+    subServices: [
+      {
+        id: 401,
+        name: "Furniture Assembly",
+        image: "/icons/furniture-assembly.png",
+        providerType: "Carpenter",
+      },
+      {
+        id: 402,
+        name: "Furniture Repairs",
+        image: "/icons/furniture-repairs.png",
+        providerType: "Carpenter",
+      },
+      {
+        id: 403,
+        name: "Custom Furniture Design",
+        image: "/icons/custom-furniture.png",
+        providerType: "Furniture Designer",
+      },
+      {
+        id: 404,
+        name: "Door & Window Repairs",
+        image: "/icons/door-window-repairs.png",
+        providerType: "Carpenter",
+      },
+      {
+        id: 405,
+        name: "Shelving & Storage Solutions",
+        image: "/icons/shelving.png",
+        providerType: "Carpenter",
+      },
+    ],
+  },
+];
+
+export const serviceCategories = [
+  "All",
+  "Cleaning",
+  "Plumbing",
+  "Electrical",
+  "Carpentry",
+  "Appliance Repair",
+  "Pest Control",
+  "Most Popular",
+  "Trending",
+];
