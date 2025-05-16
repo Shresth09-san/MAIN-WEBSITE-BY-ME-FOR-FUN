@@ -15,6 +15,8 @@ import { ThemeProvider } from "./context/ThemeContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ComingSoon from "./pages/CommingSoon";
+import MarketPlace from "./pages/MarketPlace";
+import Support from "./pages/Support";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,6 +54,8 @@ const App = () => {
                 <Suspense fallback={<Loader />}>
                   <Routes>
                     <Route path="/" element={<Index />} />
+                    <Route path="/marketplace" element={<MarketPlace />} />
+                    <Route path="/support" element={<Support />} />
                     <Route path="*" element={<NotFound />} />
                     <Route path="/coming-soon" element={<ComingSoon />} />
                   </Routes>

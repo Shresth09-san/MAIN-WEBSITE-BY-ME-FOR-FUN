@@ -18,9 +18,10 @@ const Navbar = memo(() => {
   const navLinks = [
     { title: "Home", to: "hero", type: "home" },
     { title: "Services", to: "services", type: "scroll" },
+    { title: "Marketplace", to: "/marketplace", type: "route" },
     { title: "Enterprise", to: "/coming-soon", type: "comingSoon" },
     { title: "Blog", to: "/coming-soon", type: "comingSoon" },
-    { title: "Support", to: "/coming-soon", type: "comingSoon" },
+    { title: "Support", to: "/support", type: "route" },
     { title: "Contact Us", to: "contact", type: "scroll" },
   ];
 
@@ -95,7 +96,7 @@ const Navbar = memo(() => {
       );
     }
     
-    if (link.type === "comingSoon") {
+    if (link.type === "comingSoon" || link.type === "route") {
       return (
         <Link
           key={index}

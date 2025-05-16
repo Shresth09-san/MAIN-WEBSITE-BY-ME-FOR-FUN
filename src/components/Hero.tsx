@@ -52,78 +52,87 @@ export const Hero = () => {
           )}
         </div>
         
-        {/* Grid pattern overlay */}
-        <div className="absolute inset-0 z-0">
-          <div className={`absolute bottom-0 left-0 right-0 top-0 ${
-            theme === 'dark' 
-              ? 'bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)]' 
-              : ''
-          } bg-[size:14px_24px]`}></div>
+        {/* Enhanced background patterns */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {theme === 'dark' ? (
+            <>
+              {/* Dark theme patterns */}
+              <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+              <div className="absolute top-20 left-10 w-72 h-72 bg-amber-500/10 rounded-full filter blur-3xl"></div>
+              <div className="absolute bottom-20 right-10 w-80 h-80 bg-orange-500/10 rounded-full filter blur-3xl"></div>
+            </>
+          ) : (
+            <>
+              {/* Light theme patterns */}
+              <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#0000000a_1px,transparent_1px),linear-gradient(to_bottom,#0000000a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+              <div className="absolute -top-20 -left-20 w-96 h-96 bg-amber-500/20 rounded-full filter blur-3xl"></div>
+              <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-orange-500/20 rounded-full filter blur-3xl"></div>
+              <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-yellow-500/20 rounded-full filter blur-3xl"></div>
+            </>
+          )}
         </div>
 
         <section className="h-full flex flex-col items-center justify-center relative">
           <div className="container mx-auto px-4 h-full flex flex-col items-center justify-center">
-            <div className={`max-w-5xl flex flex-col items-center justify-center z-10 pt-8 backdrop-blur-[2px] p-8 rounded-3xl ${
-              theme === 'dark' ? 'bg-zinc-900/50' : 'bg-zinc-100/20'
-            } transition-colors duration-300`}>
-              <h1 className="text-2xl md:text-5xl lg:text-7xl font-extrabold text-center tracking-tight space-x-2 md:space-x-3 lg:space-x-4 m-6">
-                <span className={`block ${theme === 'dark' ? 'text-white' : 'text-zinc-900'} drop-shadow-[0_2px_5px_rgba(0,0,0,0.5)]`}>
-                  Your One-Stop Solution
+            <div className={`max-w-5xl flex flex-col items-center justify-center z-10 pt-6 backdrop-blur-sm p-6 rounded-3xl shadow-2xl
+              ${theme === 'dark' 
+                ? 'bg-gradient-to-br from-zinc-900/60 to-zinc-800/60 border border-zinc-700/30' 
+                : 'bg-gradient-to-br from-white/60 to-amber-50/60 border border-white/50'
+              } transition-colors duration-300`}>
+              <h1 className="text-xl md:text-4xl lg:text-5xl font-extrabold text-center tracking-tight space-x-2 md:space-x-3 lg:space-x-4 m-4">
+                <span className={`block ${theme === 'dark' ? 'text-white' : 'text-zinc-900'} text-shadow-md`}>
+                  Premium Quality Services
                 </span>
-                <span className="text-amber-500 drop-shadow-[0_2px_5px_rgba(0,0,0,0.5)]">
-                  For All Home Services
+                <span className="text-amber-500 text-shadow-md">
+                  Excellence in Every Detail
                 </span>
               </h1>
 
-              <p className={`text-base md:text-xl text-center max-w-2xl ${
-                theme === 'dark' ? 'text-zinc-400' : 'text-zinc-700'
-              } leading-relaxed mb-6 drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] font-medium px-4 transition-colors duration-300`}>
-                From repairs to renovations, cleaning to painting - we've got you covered. Professional services, guaranteed quality, and 24/7 customer support with a 100% satisfaction guarantee.
+              <p className={`text-sm md:text-lg text-center max-w-2xl ${
+                theme === 'dark' ? 'text-zinc-200' : 'text-zinc-800'
+              } leading-relaxed mb-5 text-shadow-sm font-medium px-4 transition-colors duration-300`}>
+                Professional services delivered with excellence. Our expert team handles everything you need with precision, reliability, and guaranteed satisfaction for all your service needs.
               </p>
-
-              {/* Trust Indicators - Single Line Design */}
-              
 
               <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-4 z-20 w-full">
                 <button 
                   onClick={() => window.location.href = 'https://booking.d0lt.com'} 
-                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-10 py-4 h-auto rounded-full text-lg shadow-[0_8px_30px_rgb(255,193,7,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,193,7,0.45)] border-b-4 border-orange-600 border-2 border-white/30"
+                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-10 py-3 h-auto rounded-full text-md shadow-[0_8px_30px_rgb(255,193,7,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,193,7,0.45)] border-b-4 border-orange-600 border-2 border-white/30"
                 >
-                  Get Started
+                  Book Now
                 </button>
                 <button 
                   onClick={scrollToServices} 
-                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-10 py-4 h-auto rounded-full text-lg shadow-[0_8px_30px_rgb(255,193,7,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,193,7,0.45)] border-b-4 border-orange-600 border-2 border-white/30"
+                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-10 py-3 h-auto rounded-full text-md shadow-[0_8px_30px_rgb(255,193,7,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,193,7,0.45)] border-b-4 border-orange-600 border-2 border-white/30"
                 >
-                  Book a Service
+                  Our Services
                 </button>
-                
               </div>
-              <div className={`w-full max-w-2xl mb-8 py-3 px-5 rounded-full flex items-center justify-between flex-wrap gap-2 ${theme === 'dark' ? 'bg-gradient-to-r from-zinc-900/70 to-zinc-800/70' : 'bg-gradient-to-r from-white/70 to-amber-50/70'} backdrop-blur-md shadow-lg border ${theme === 'dark' ? 'border-amber-500/20' : 'border-amber-500/30'}`}>
+              <div className={`w-full max-w-2xl mb-6 py-2 px-4 rounded-full flex items-center justify-between flex-wrap gap-2 ${theme === 'dark' ? 'bg-gradient-to-r from-zinc-900/70 to-zinc-800/70' : 'bg-gradient-to-r from-white/70 to-amber-50/70'} backdrop-blur-md shadow-lg border ${theme === 'dark' ? 'border-amber-500/20' : 'border-amber-500/30'}`}>
                 <div className="flex items-center">
                   <div className="flex -space-x-1">
                     {['#ffb700', '#fa8128', '#f25a5a', '#a259ff'].map((color, i) => (
                       <div key={i} className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white dark:border-zinc-800" style={{backgroundColor: color, transform: `translateX(-${i * 4}px)`}}></div>
                     ))}
                   </div>
-                  <span className={`text-xs sm:text-sm font-medium ml-2 ${theme === 'dark' ? 'text-zinc-300' : 'text-zinc-700'}`}>20K+ users</span>
+                  <span className={`text-xs sm:text-sm font-medium ml-2 ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-800'}`}>2,000+ happy homes</span>
                 </div>
                 
                 <div className="hidden sm:block h-4 mx-2 border-r border-zinc-300/30 dark:border-zinc-700/30"></div>
                 
                 <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm">
-                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-green-400' : 'text-green-600'}`}>
+                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-green-300' : 'text-green-700'} font-medium`}>
                     <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-1 animate-pulse"></span>
-                    Verified
+                    Licensed
                   </span>
-                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-amber-400' : 'text-amber-600'}`}>
+                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-amber-300' : 'text-amber-700'} font-medium`}>
                     <span className="mr-1">★</span>4.9
                   </span>
-                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>
+                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-blue-300' : 'text-blue-700'} font-medium`}>
                     <span className="mr-1">🛡️</span>Insured
                   </span>
-                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'} bg-opacity-30 px-2 py-1 text-xs rounded-full ${theme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-200'}`}>
-                    100% Guarantee
+                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-800'} bg-opacity-30 px-2 py-1 text-xs rounded-full ${theme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-200'} font-medium`}>
+                    100% Satisfaction
                   </span>
                 </div>
               </div>
@@ -153,37 +162,49 @@ export const Hero = () => {
             }`}
           >
             <div className="text-center text-white max-w-4xl px-8">
-              <h2 className="text-4xl md:text-6xl font-bold mb-6">
-                Professional Home Services
+              <h2 className="text-3xl md:text-5xl font-bold mb-8 text-shadow-lg">
+                Our Professional Services
               </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div className={`${theme === 'dark' ? 'bg-zinc-900/50' : 'bg-zinc-800/60'} p-4 rounded-lg backdrop-blur-sm ${
-                  theme === 'dark' ? 'hover:bg-zinc-900/70' : 'hover:bg-zinc-800/80'
-                } transition-all duration-300`}>
-                  <h3 className="text-xl font-semibold mb-2 text-white">Repairs</h3>
-                  <p className="text-sm text-zinc-400">Plumbing, Electrical, HVAC</p>
-                </div>
-                <div className={`${theme === 'dark' ? 'bg-zinc-900/50' : 'bg-zinc-800/60'} p-4 rounded-lg backdrop-blur-sm ${
-                  theme === 'dark' ? 'hover:bg-zinc-900/70' : 'hover:bg-zinc-800/80'
-                } transition-all duration-300`}>
-                  <h3 className="text-xl font-semibold mb-2 text-white">Cleaning</h3>
-                  <p className="text-sm text-zinc-400">Deep Cleaning, Regular Maintenance</p>
-                </div>
-                <div className={`${theme === 'dark' ? 'bg-zinc-900/50' : 'bg-zinc-800/60'} p-4 rounded-lg backdrop-blur-sm ${
-                  theme === 'dark' ? 'hover:bg-zinc-900/70' : 'hover:bg-zinc-800/80'
-                } transition-all duration-300`}>
-                  <h3 className="text-xl font-semibold mb-2 text-white">Painting</h3>
-                  <p className="text-sm text-zinc-400">Interior, Exterior, Decorative</p>
-                </div>
-                <div className={`${theme === 'dark' ? 'bg-zinc-900/50' : 'bg-zinc-800/60'} p-4 rounded-lg backdrop-blur-sm ${
-                  theme === 'dark' ? 'hover:bg-zinc-900/70' : 'hover:bg-zinc-800/80'
-                } transition-all duration-300`}>
-                  <h3 className="text-xl font-semibold mb-2 text-white">Renovation</h3>
-                  <p className="text-sm text-zinc-400">Home Improvement, Remodeling</p>
-                </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {[
+                  {
+                    title: "Painting",
+                    description: "Interior, Exterior, Decorative",
+                    icon: "🎨"
+                  },
+                  {
+                    title: "Cleaning",
+                    description: "Deep Clean, Regular, Move-out",
+                    icon: "✨"
+                  },
+                  {
+                    title: "Repairs",
+                    description: "Plumbing, Electrical, General",
+                    icon: "🔧"
+                  },
+                  {
+                    title: "Renovation",
+                    description: "Kitchen, Bath, Full Home",
+                    icon: "🏠"
+                  }
+                ].map((service, index) => (
+                  <div 
+                    key={index}
+                    className={`${theme === 'dark' ? 'bg-zinc-900/50' : 'bg-zinc-800/60'} 
+                      p-5 rounded-xl backdrop-blur-sm border border-white/10
+                      ${theme === 'dark' ? 'hover:bg-zinc-900/70' : 'hover:bg-zinc-800/80'} 
+                      transition-all duration-300 hover:scale-105 hover:shadow-lg`}
+                  >
+                    <div className="text-2xl mb-3">{service.icon}</div>
+                    <h3 className="text-lg font-semibold mb-2 text-white text-shadow-sm">
+                      {service.title}
+                    </h3>
+                    <p className="text-sm text-zinc-100 leading-relaxed font-medium">
+                      {service.description}
+                    </p>
+                  </div>
+                ))}
               </div>
-              
-              
             </div>
           </div>
         </div>

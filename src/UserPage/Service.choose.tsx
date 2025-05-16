@@ -91,6 +91,22 @@ export const ServiceChoose = () => {
     }
   };
 
+  // Add manual scrolling functionality
+  const handleManualScroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 300; // Pixels to scroll at a time
+      const scrollLeft = scrollContainerRef.current.scrollLeft;
+      const newScrollLeft = direction === 'left' 
+        ? scrollLeft - scrollAmount 
+        : scrollLeft + scrollAmount;
+      
+      scrollContainerRef.current.scrollTo({
+        left: newScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   /**
    * Maps service names to their categories for efficient filtering
    * @returns Record mapping service names to category strings
@@ -459,92 +475,120 @@ export const ServiceChoose = () => {
             ) : (
               <>
                 {filteredServices.length > 0 ? (
-                  <div 
-                    ref={scrollContainerRef}
-                    className="relative w-full overflow-hidden"
-                    style={{ 
-                      maskImage: 'linear-gradient(to right, transparent, black 5%, black 95%, transparent)',
-                      WebkitMaskImage: 'linear-gradient(to right, transparent, black 5%, black 95%, transparent)'
-                    }}
-                  >
-                    <div 
-                      ref={scrollRef}
-                      className="flex flex-wrap md:flex-nowrap gap-4 sm:gap-6 py-4 justify-center md:justify-start"
-                      style={{ willChange: 'transform' }}
+                  <div className="relative w-full">
+                    {/* Manual scroll buttons */}
+                    <button 
+                      onClick={() => handleManualScroll('left')}
+                      className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full ${
+                        theme === 'dark' 
+                          ? "bg-black/60 text-white hover:bg-black/80" 
+                          : "bg-white/60 text-black hover:bg-white/80"
+                      } shadow-lg transition-all`}
                     >
-                      {filteredServices.map((service, index) => {
-                        const serviceCategory = serviceToCategory[service.name] || "Other";
-                        const isMatchedCategory = selectedCategory !== "All" && serviceCategory === selectedCategory;
-                        
-                        return (
-                          <div
-                            key={`${service.id || service.name}-${index}`}
-                            className={`${
-                              theme === 'dark'
-                                ? "bg-black/40 backdrop-blur-sm"
-                                : "bg-white/70 backdrop-blur-sm"
-                            } rounded-2xl shadow-lg hover:shadow-xl transition-all border
-                              flex flex-col w-full sm:w-[240px] md:w-[280px] h-[280px] sm:h-[320px] flex-shrink-0 group
-                              ${isMatchedCategory ? 
-                                "border-amber-500/50 ring-2 ring-amber-500/20" 
-                                : theme === 'dark' 
-                                  ? "border-zinc-800/50"
-                                  : "border-gray-200"
-                              }`}
-                            style={{
-                              transform: isMatchedCategory ? "translateY(-5px)" : "none"
-                            }}
-                            onMouseEnter={pauseScrollAnimation}
-                            onMouseLeave={resumeScrollAnimation}
-                          >
-                            <div className="p-4 sm:p-6 flex flex-col items-center justify-between h-full">
-                              <div className="flex flex-col items-center w-full">
-                                <div className="w-16 sm:w-20 h-16 sm:h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                                  {(() => {
-                                    const IconComponent = getIconComponent(service.name);
-                                    return <IconComponent size={24} className="text-white" />;
-                                  })()}
-                                </div>
-                                <h3 className={`text-lg sm:text-xl font-semibold mb-2 text-center group-hover:text-amber-500 transition-colors line-clamp-2 ${
-                                  theme === 'dark' ? "text-white" : "text-gray-900"
-                                }`}>
-                                  {searchQuery ? highlightMatch(service.name, searchQuery) : service.name}
-                                </h3>
-                                <p className={`text-center text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 w-full ${
-                                  theme === 'dark' ? "text-zinc-400" : "text-gray-600"
-                                }`}>
-                                  {searchQuery && service.description
-                                    ? highlightMatch(service.description, searchQuery)
-                                    : (service.description || "Professional service available on demand")}
-                                </p>
-                                <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs mb-3 sm:mb-4
-                                  ${isMatchedCategory 
-                                    ? "bg-amber-500/20 text-amber-500 font-medium" 
-                                    : theme === 'dark'
-                                      ? "bg-zinc-800/50 text-zinc-400"
-                                      : "bg-gray-200/70 text-gray-600"
-                                  }`}>
-                                  {serviceCategory}
-                                </span>
-                              </div>
-                              
-                              <Button 
-                                className={`w-full font-medium rounded-xl 
-                                shadow-md hover:shadow-lg transition-all mt-auto py-2 sm:py-2.5 h-auto text-xs sm:text-sm
-                                ${isMatchedCategory 
-                                  ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black" 
-                                  : theme === 'dark'
-                                    ? "bg-zinc-900/50 hover:bg-zinc-800/50 text-white border border-zinc-800"
-                                    : "bg-gray-200 hover:bg-gray-300 text-gray-900 border border-gray-300"
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                      </svg>
+                    </button>
+                    
+                    <button 
+                      onClick={() => handleManualScroll('right')}
+                      className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full ${
+                        theme === 'dark' 
+                          ? "bg-black/60 text-white hover:bg-black/80" 
+                          : "bg-white/60 text-black hover:bg-white/80"
+                      } shadow-lg transition-all`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </button>
+                    
+                    <div 
+                      ref={scrollContainerRef}
+                      className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-amber-500 scrollbar-track-transparent px-2"
+                      style={{ scrollbarWidth: 'thin' }}
+                    >
+                      <div 
+                        ref={scrollRef}
+                        className="flex flex-nowrap gap-4 sm:gap-6 py-4 px-2"
+                        style={{ willChange: 'transform' }}
+                      >
+                        {filteredServices.map((service, index) => {
+                          const serviceCategory = serviceToCategory[service.name] || "Other";
+                          const isMatchedCategory = selectedCategory !== "All" && serviceCategory === selectedCategory;
+                          
+                          return (
+                            <div
+                              key={`${service.id || service.name}-${index}`}
+                              className={`${
+                                theme === 'dark'
+                                  ? "bg-black/40 backdrop-blur-sm"
+                                  : "bg-white/70 backdrop-blur-sm"
+                              } rounded-2xl shadow-lg hover:shadow-xl transition-all border
+                                flex flex-col w-[280px] h-[320px] flex-shrink-0 group
+                                ${isMatchedCategory ? 
+                                  "border-amber-500/50 ring-2 ring-amber-500/20" 
+                                  : theme === 'dark' 
+                                    ? "border-zinc-800/50"
+                                    : "border-gray-200"
                                 }`}
-                                onClick={redirectToPrebooking}
-                              >
-                                {getSubservicesForService(service.name).length === 0 ? 'Request Service' : 'Select Options'}
-                              </Button>
+                              style={{
+                                transform: isMatchedCategory ? "translateY(-5px)" : "none"
+                              }}
+                              onMouseEnter={pauseScrollAnimation}
+                              onMouseLeave={resumeScrollAnimation}
+                            >
+                              <div className="p-6 flex flex-col items-center h-full">
+                                <div className="flex flex-col items-center w-full flex-grow">
+                                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg mb-4 group-hover:scale-110 transition-transform">
+                                    {(() => {
+                                      const IconComponent = getIconComponent(service.name);
+                                      return <IconComponent size={24} className="text-white" />;
+                                    })()}
+                                  </div>
+                                  <h3 className={`text-xl font-semibold mb-2 text-center group-hover:text-amber-500 transition-colors line-clamp-2 ${
+                                    theme === 'dark' ? "text-white" : "text-gray-900"
+                                  }`}>
+                                    {searchQuery ? highlightMatch(service.name, searchQuery) : service.name}
+                                  </h3>
+                                  <p className={`text-center text-sm mb-4 line-clamp-2 w-full ${
+                                    theme === 'dark' ? "text-zinc-400" : "text-gray-600"
+                                  }`}>
+                                    {searchQuery && service.description
+                                      ? highlightMatch(service.description, searchQuery)
+                                      : (service.description || "Professional service available on demand")}
+                                  </p>
+                                  <span className={`px-3 py-1 rounded-full text-xs mb-4
+                                    ${isMatchedCategory 
+                                      ? "bg-amber-500/20 text-amber-500 font-medium" 
+                                      : theme === 'dark'
+                                        ? "bg-zinc-800/50 text-zinc-400"
+                                        : "bg-gray-200/70 text-gray-600"
+                                    }`}>
+                                    {serviceCategory}
+                                  </span>
+                                </div>
+                                
+                                <div className="w-full mt-auto">
+                                  <Button 
+                                    className={`w-full font-medium rounded-xl 
+                                    shadow-md hover:shadow-lg transition-all py-2.5 h-auto text-sm
+                                    ${isMatchedCategory 
+                                      ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black" 
+                                      : theme === 'dark'
+                                        ? "bg-zinc-900/50 hover:bg-zinc-800/50 text-white border border-zinc-800"
+                                        : "bg-gray-200 hover:bg-gray-300 text-gray-900 border border-gray-300"
+                                    }`}
+                                    onClick={redirectToPrebooking}
+                                  >
+                                    {getSubservicesForService(service.name).length === 0 ? 'Request Service' : 'Select Options'}
+                                  </Button>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -581,7 +625,7 @@ export const ServiceChoose = () => {
   );
 }
 
-// Add these styles to help with scrolling categories
+// Add these styles to help with scrolling categories and custom scrollbar
 const styles = document.createElement('style');
 styles.innerHTML = `
 .hide-scrollbar::-webkit-scrollbar {
@@ -590,6 +634,16 @@ styles.innerHTML = `
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #f59e0b;
+  border-radius: 20px;
 }
 @media (max-width: 768px) {
   .flex-wrap {
