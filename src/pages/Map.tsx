@@ -21,15 +21,14 @@ const Map = () => {
   ];
 
   return (
-    <section className={`${isDarkMode ? 'bg-gray-900' : 'bg-slate-100'} py-12`}>
+    <section className={`${isDarkMode ? 'bg-gradient-to-b from-black via-zinc-900 to-black' : 'bg-gradient-to-b from-amber-50 via-yellow-50 to-orange-50'} py-12 rounded-lg`}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
-          <h2 className={`text-3xl font-bold ${isDarkMode ? 'text-slate-300' : 'text-gray-800'} mb-4`}>Discover Our Location</h2>
-          <p className={`${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>We are located in the heart of Buenos Aires, providing top-notch services to our community. Explore our main office and service areas on the map below.</p>
-         
+          <h2 className={`text-3xl font-bold ${isDarkMode ? 'text-amber-200' : 'text-orange-900'} mb-4`}>Discover Our Location</h2>
+          <p className={`${isDarkMode ? 'text-amber-300' : 'text-orange-700'}`}>We are located in the heart of Buenos Aires, providing top-notch services to our community. Explore our main office and service areas on the map below.</p>
         </div>
         
-        <div className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-md`}>
+        <div className={`${isDarkMode ? 'bg-zinc-900 border-amber-900' : 'bg-white border-gray-300'} p-6 rounded-xl border shadow-md`}>
           <div className="rounded-xl overflow-hidden h-[500px] relative">
             <div className="absolute inset-0 z-0">
               <MapContainer

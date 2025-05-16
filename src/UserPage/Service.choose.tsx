@@ -94,7 +94,7 @@ export const ServiceChoose = () => {
   // Add manual scrolling functionality
   const handleManualScroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 300; // Pixels to scroll at a time
+      const scrollAmount = 350; // Increased scroll amount for larger cards
       const scrollLeft = scrollContainerRef.current.scrollLeft;
       const newScrollLeft = direction === 'left' 
         ? scrollLeft - scrollAmount 
@@ -105,6 +105,62 @@ export const ServiceChoose = () => {
         behavior: 'smooth'
       });
     }
+  };
+
+  // Check if we're on mobile
+  const isMobileView = () => {
+    return window.innerWidth < 768;
+  };
+
+  // Optimized drag scrolling implementation
+  const enableDragScroll = () => {
+    const container = scrollContainerRef.current;
+    if (!container || isMobileView()) return;
+    
+    let isDown = false;
+    let startX: number;
+    let scrollLeft: number;
+    
+    const onMouseDown = (e: MouseEvent) => {
+      isDown = true;
+      container.style.cursor = 'grabbing';
+      startX = e.pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+      
+      // Pause any auto-scroll animation
+      pauseScrollAnimation();
+    };
+    
+    const onMouseUp = () => {
+      if (!isDown) return;
+      isDown = false;
+      container.style.cursor = 'grab';
+      
+      // Resume animation if applicable
+      resumeScrollAnimation();
+    };
+    
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 2; // Scroll speed multiplier
+      container.scrollLeft = scrollLeft - walk;
+    };
+    
+    // Add and remove event listeners properly to prevent memory leaks
+    container.addEventListener('mousedown', onMouseDown);
+    container.addEventListener('mouseleave', onMouseUp);
+    container.addEventListener('mouseup', onMouseUp);
+    container.addEventListener('mousemove', onMouseMove);
+    
+    // Return cleanup function
+    return () => {
+      container.removeEventListener('mousedown', onMouseDown);
+      container.removeEventListener('mouseleave', onMouseUp);
+      container.removeEventListener('mouseup', onMouseUp);
+      container.removeEventListener('mousemove', onMouseMove);
+    };
   };
 
   /**
@@ -270,6 +326,9 @@ export const ServiceChoose = () => {
   }, [selectedCategory, searchQuery, serviceToCategory]);
 
   useEffect(() => {
+    // Enable drag scrolling when component mounts
+    const cleanupDragScroll = enableDragScroll();
+
     if (!scrollRef.current || !scrollContainerRef.current) return;
     
     const cleanup = () => {
@@ -324,7 +383,12 @@ export const ServiceChoose = () => {
       }
     }
     
-    return cleanup;
+    return () => {
+      // Clean up drag scroll
+      if (cleanupDragScroll) cleanupDragScroll();
+      
+      cleanup();
+    };
   }, [filteredServices.length, selectedCategory, searchQuery]);
 
   const highlightMatch = (text: string, query: string) => {
@@ -378,11 +442,21 @@ export const ServiceChoose = () => {
             <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-2 ${
               theme === 'dark' ? "text-white" : "text-gray-900"
             }`}>
-              Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">Service</span>
+              {selectedCategory === "All" ? (
+                <>Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">Service</span></>
+              ) : (
+                <>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">{selectedCategory}</span> Services
+                </>
+              )}
             </h1>
             <p className={`text-center text-sm mb-4 sm:mb-6 ${
               theme === 'dark' ? "text-zinc-400" : "text-gray-600"
-            }`}>Select from our wide range of professional services</p>
+            }`}>
+              {selectedCategory === "All" 
+                ? "Select from our wide range of professional services" 
+                : `Browse our professional ${selectedCategory.toLowerCase()} services`}
+            </p>
             
             <div className="max-w-3xl mx-auto">
               <div className={`${
@@ -476,119 +550,54 @@ export const ServiceChoose = () => {
               <>
                 {filteredServices.length > 0 ? (
                   <div className="relative w-full">
-                    {/* Manual scroll buttons */}
-                    <button 
-                      onClick={() => handleManualScroll('left')}
-                      className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full ${
-                        theme === 'dark' 
-                          ? "bg-black/60 text-white hover:bg-black/80" 
-                          : "bg-white/60 text-black hover:bg-white/80"
-                      } shadow-lg transition-all`}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                      </svg>
-                    </button>
+                    {/* Only show manual scroll buttons on desktop */}
+                    <div className="hidden md:block">
+                      <button 
+                        onClick={() => handleManualScroll('left')}
+                        className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full ${
+                          theme === 'dark' 
+                            ? "bg-black/60 text-white hover:bg-black/80" 
+                            : "bg-white/60 text-black hover:bg-white/80"
+                        } shadow-lg transition-all`}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                      </button>
+                      
+                      <button 
+                        onClick={() => handleManualScroll('right')}
+                        className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full ${
+                          theme === 'dark' 
+                            ? "bg-black/60 text-white hover:bg-black/80" 
+                            : "bg-white/60 text-black hover:bg-white/80"
+                        } shadow-lg transition-all`}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                      </button>
+                    </div>
                     
-                    <button 
-                      onClick={() => handleManualScroll('right')}
-                      className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full ${
-                        theme === 'dark' 
-                          ? "bg-black/60 text-white hover:bg-black/80" 
-                          : "bg-white/60 text-black hover:bg-white/80"
-                      } shadow-lg transition-all`}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                      </svg>
-                    </button>
-                    
+                    {/* Desktop horizontal scroll view */}
                     <div 
                       ref={scrollContainerRef}
-                      className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-amber-500 scrollbar-track-transparent px-2"
-                      style={{ scrollbarWidth: 'thin' }}
+                      className="w-full md:overflow-x-auto hide-scrollbar px-2 cursor-grab hidden md:block"
+                      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
                       <div 
                         ref={scrollRef}
-                        className="flex flex-nowrap gap-4 sm:gap-6 py-4 px-2"
+                        className="flex flex-nowrap gap-6 py-4 px-2"
                         style={{ willChange: 'transform' }}
                       >
-                        {filteredServices.map((service, index) => {
-                          const serviceCategory = serviceToCategory[service.name] || "Other";
-                          const isMatchedCategory = selectedCategory !== "All" && serviceCategory === selectedCategory;
-                          
-                          return (
-                            <div
-                              key={`${service.id || service.name}-${index}`}
-                              className={`${
-                                theme === 'dark'
-                                  ? "bg-black/40 backdrop-blur-sm"
-                                  : "bg-white/70 backdrop-blur-sm"
-                              } rounded-2xl shadow-lg hover:shadow-xl transition-all border
-                                flex flex-col w-[280px] h-[320px] flex-shrink-0 group
-                                ${isMatchedCategory ? 
-                                  "border-amber-500/50 ring-2 ring-amber-500/20" 
-                                  : theme === 'dark' 
-                                    ? "border-zinc-800/50"
-                                    : "border-gray-200"
-                                }`}
-                              style={{
-                                transform: isMatchedCategory ? "translateY(-5px)" : "none"
-                              }}
-                              onMouseEnter={pauseScrollAnimation}
-                              onMouseLeave={resumeScrollAnimation}
-                            >
-                              <div className="p-6 flex flex-col items-center h-full">
-                                <div className="flex flex-col items-center w-full flex-grow">
-                                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg mb-4 group-hover:scale-110 transition-transform">
-                                    {(() => {
-                                      const IconComponent = getIconComponent(service.name);
-                                      return <IconComponent size={24} className="text-white" />;
-                                    })()}
-                                  </div>
-                                  <h3 className={`text-xl font-semibold mb-2 text-center group-hover:text-amber-500 transition-colors line-clamp-2 ${
-                                    theme === 'dark' ? "text-white" : "text-gray-900"
-                                  }`}>
-                                    {searchQuery ? highlightMatch(service.name, searchQuery) : service.name}
-                                  </h3>
-                                  <p className={`text-center text-sm mb-4 line-clamp-2 w-full ${
-                                    theme === 'dark' ? "text-zinc-400" : "text-gray-600"
-                                  }`}>
-                                    {searchQuery && service.description
-                                      ? highlightMatch(service.description, searchQuery)
-                                      : (service.description || "Professional service available on demand")}
-                                  </p>
-                                  <span className={`px-3 py-1 rounded-full text-xs mb-4
-                                    ${isMatchedCategory 
-                                      ? "bg-amber-500/20 text-amber-500 font-medium" 
-                                      : theme === 'dark'
-                                        ? "bg-zinc-800/50 text-zinc-400"
-                                        : "bg-gray-200/70 text-gray-600"
-                                    }`}>
-                                    {serviceCategory}
-                                  </span>
-                                </div>
-                                
-                                <div className="w-full mt-auto">
-                                  <Button 
-                                    className={`w-full font-medium rounded-xl 
-                                    shadow-md hover:shadow-lg transition-all py-2.5 h-auto text-sm
-                                    ${isMatchedCategory 
-                                      ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black" 
-                                      : theme === 'dark'
-                                        ? "bg-zinc-900/50 hover:bg-zinc-800/50 text-white border border-zinc-800"
-                                        : "bg-gray-200 hover:bg-gray-300 text-gray-900 border border-gray-300"
-                                    }`}
-                                    onClick={redirectToPrebooking}
-                                  >
-                                    {getSubservicesForService(service.name).length === 0 ? 'Request Service' : 'Select Options'}
-                                  </Button>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
+                        {/* Render services horizontally for desktop */}
+                        {filteredServices.map((service, index) => renderServiceCard(service, index))}
                       </div>
+                    </div>
+                    
+                    {/* Mobile grid view */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
+                      {filteredServices.map((service, index) => renderServiceCard(service, index, true))}
                     </div>
                   </div>
                 ) : (
@@ -623,6 +632,85 @@ export const ServiceChoose = () => {
       </div>
     </div>
   );
+
+  // Helper function to render service cards consistently
+  function renderServiceCard(service: Service, index: number, isMobile: boolean = false) {
+    const serviceCategory = serviceToCategory[service.name] || "Other";
+    const isMatchedCategory = selectedCategory !== "All" && serviceCategory === selectedCategory;
+    
+    return (
+      <div
+        key={`${service.id || service.name}-${index}`}
+        className={`${
+          theme === 'dark'
+            ? "bg-black/40 backdrop-blur-sm"
+            : "bg-white/70 backdrop-blur-sm"
+        } rounded-2xl shadow-lg hover:shadow-xl transition-all border
+          flex flex-col ${isMobile ? 'w-full h-full min-h-[360px]' : 'w-[320px] h-[380px]'} flex-shrink-0 group
+          ${isMatchedCategory ? 
+            "border-amber-500/50 ring-2 ring-amber-500/20" 
+            : theme === 'dark' 
+              ? "border-zinc-800/50"
+              : "border-gray-200"
+          }`}
+        style={{
+          transform: isMatchedCategory ? "translateY(-5px)" : "none"
+        }}
+        onMouseEnter={!isMobile ? pauseScrollAnimation : undefined}
+        onMouseLeave={!isMobile ? resumeScrollAnimation : undefined}
+      >
+        <div className="p-4 sm:p-6 flex flex-col h-full justify-between">
+          {/* Content Section - Fixed Height */}
+          <div className="flex flex-col items-center w-full min-h-[200px] sm:min-h-[220px]">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+              {(() => {
+                const IconComponent = getIconComponent(service.name);
+                return <IconComponent size={isMobile ? 24 : 28} className="text-white" />;
+              })()}
+            </div>
+            <h3 className={`text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-center group-hover:text-amber-500 transition-colors line-clamp-2 ${
+              theme === 'dark' ? "text-white" : "text-gray-900"
+            }`}>
+              {searchQuery ? highlightMatch(service.name, searchQuery) : service.name}
+            </h3>
+            <p className={`text-center text-xs sm:text-sm mb-3 sm:mb-5 line-clamp-3 w-full ${
+              theme === 'dark' ? "text-zinc-300" : "text-gray-600"
+            }`}>
+              {searchQuery && service.description
+                ? highlightMatch(service.description, searchQuery)
+                : (service.description || "Professional service available on demand")}
+            </p>
+            <span className={`px-3 py-1 rounded-full text-xs sm:text-sm
+              ${isMatchedCategory 
+                ? "bg-amber-500/20 text-amber-500 font-medium" 
+                : theme === 'dark'
+                  ? "bg-zinc-800/50 text-zinc-300"
+                  : "bg-gray-200/70 text-gray-600"
+              }`}>
+              {serviceCategory}
+            </span>
+          </div>
+          
+          {/* Button Section - Always at Bottom */}
+          <div className="w-full mt-auto pt-3 sm:pt-4 flex-shrink-0">
+            <Button 
+              className={`w-full font-medium rounded-xl 
+              shadow-md hover:shadow-lg transition-all py-2.5 sm:py-3 h-auto text-sm sm:text-base
+              ${isMatchedCategory 
+                ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-black" 
+                : theme === 'dark'
+                  ? "bg-zinc-900/50 hover:bg-zinc-800/50 text-white border border-zinc-800"
+                  : "bg-gray-200 hover:bg-gray-300 text-gray-900 border border-gray-300"
+              }`}
+              onClick={redirectToPrebooking}
+            >
+              {getSubservicesForService(service.name).length === 0 ? 'Request Service' : 'Select Options'}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 // Add these styles to help with scrolling categories and custom scrollbar
@@ -630,20 +718,12 @@ const styles = document.createElement('style');
 styles.innerHTML = `
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+  width: 0;
+  height: 0;
 }
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-.scrollbar-thin::-webkit-scrollbar {
-  height: 6px;
-}
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: transparent;
-}
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: #f59e0b;
-  border-radius: 20px;
 }
 @media (max-width: 768px) {
   .flex-wrap {

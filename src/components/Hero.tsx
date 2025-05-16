@@ -97,13 +97,13 @@ export const Hero = () => {
               <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-4 z-20 w-full">
                 <button 
                   onClick={() => window.location.href = 'https://booking.d0lt.com'} 
-                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-10 py-3 h-auto rounded-full text-md shadow-[0_8px_30px_rgb(255,193,7,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,193,7,0.45)] border-b-4 border-orange-600 border-2 border-white/30"
+                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-10 py-3 h-auto rounded-full text-md shadow-[0_8px_30px_rgb(255,193,7,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,193,7,0.45)] border-[3px] border-amber-400/50 hover:border-amber-300/70"
                 >
                   Book Now
                 </button>
                 <button 
                   onClick={scrollToServices} 
-                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-10 py-3 h-auto rounded-full text-md shadow-[0_8px_30px_rgb(255,193,7,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,193,7,0.45)] border-b-4 border-orange-600 border-2 border-white/30"
+                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-10 py-3 h-auto rounded-full text-md shadow-[0_8px_30px_rgb(255,193,7,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,193,7,0.45)] border-[3px] border-amber-400/50 hover:border-amber-300/70"
                 >
                   Our Services
                 </button>
@@ -120,18 +120,19 @@ export const Hero = () => {
                 
                 <div className="hidden sm:block h-4 mx-2 border-r border-zinc-300/30 dark:border-zinc-700/30"></div>
                 
-                <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm">
-                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-green-300' : 'text-green-700'} font-medium`}>
-                    <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-1 animate-pulse"></span>
+                <div className="flex flex-wrap justify-center sm:justify-start items-center gap-1.5 xs:gap-2 sm:gap-3 md:gap-4 text-[10px] xs:text-xs sm:text-sm w-full">
+                  {/* Stats items with proper responsive sizing */}
+                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-green-300' : 'text-green-700'} font-medium px-1.5 py-0.5 rounded-full`}>
+                    <span className="inline-block w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500 mr-1 animate-pulse"></span>
                     Licensed
                   </span>
-                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-amber-300' : 'text-amber-700'} font-medium`}>
+                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-amber-300' : 'text-amber-700'} font-medium px-1.5 py-0.5 rounded-full`}>
                     <span className="mr-1">★</span>4.9
                   </span>
-                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-blue-300' : 'text-blue-700'} font-medium`}>
+                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-blue-300' : 'text-blue-700'} font-medium px-1.5 py-0.5 rounded-full`}>
                     <span className="mr-1">🛡️</span>Insured
                   </span>
-                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-800'} bg-opacity-30 px-2 py-1 text-xs rounded-full ${theme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-200'} font-medium`}>
+                  <span className={`inline-flex items-center ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-800'} bg-opacity-30 px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] xs:text-xs rounded-full ${theme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-200'} font-medium`}>
                     100% Satisfaction
                   </span>
                 </div>
@@ -190,13 +191,21 @@ export const Hero = () => {
                 ].map((service, index) => (
                   <div 
                     key={index}
-                    className={`${theme === 'dark' ? 'bg-zinc-900/50' : 'bg-zinc-800/60'} 
+                    className={`
+                      ${theme === 'dark' ? 'bg-zinc-900/90' : 'bg-zinc-800/60'} 
                       p-5 rounded-xl backdrop-blur-sm border border-white/10
-                      ${theme === 'dark' ? 'hover:bg-zinc-900/70' : 'hover:bg-zinc-800/80'} 
-                      transition-all duration-300 hover:scale-105 hover:shadow-lg`}
+                      hover:border-amber-500/50 hover:shadow-[0_0_15px_rgba(251,191,36,0.3)]
+                      transition-all duration-300 transform hover:translate-y-[-8px]
+                      cursor-pointer relative overflow-hidden group
+                    `}
                   >
-                    <div className="text-2xl mb-3">{service.icon}</div>
-                    <h3 className="text-lg font-semibold mb-2 text-white text-shadow-sm">
+                    {/* Add hover highlight effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-500/0 via-amber-500/0 to-amber-500/0 
+                      group-hover:from-amber-500/10 group-hover:via-amber-500/20 group-hover:to-amber-500/10
+                      transition-all duration-500 opacity-0 group-hover:opacity-100"></div>
+                    
+                    <div className="text-2xl mb-3 transform group-hover:scale-110 transition-transform duration-300">{service.icon}</div>
+                    <h3 className="text-lg font-semibold mb-2 text-white text-shadow-sm group-hover:text-amber-300 transition-colors duration-300">
                       {service.title}
                     </h3>
                     <p className="text-sm text-zinc-100 leading-relaxed font-medium">

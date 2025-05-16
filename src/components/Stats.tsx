@@ -1,6 +1,7 @@
 import { useInView } from "react-intersection-observer";
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
+import { useTheme } from "@/context/ThemeContext";
 
 const stats = [
   { value: "20K", label: "Happy Customers", endValue: 20 },
@@ -16,7 +17,8 @@ export const Stats = () => {
   const numberRefs = useRef<Array<HTMLDivElement | null>>([]);
   const animationRef = useRef<gsap.core.Tween[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  
+  const { theme } = useTheme();
+
   const startAnimationCycle = () => {
     // Reset all numbers to 0
     stats.forEach((stat, index) => {
@@ -68,7 +70,11 @@ export const Stats = () => {
   }, [inView]);
 
   return (
-    <section className="py-12 bg-primary/5 text-amber-300">
+    <section className={
+      theme === "dark"
+        ? "py-12 bg-black text-amber-300"
+        : "py-12 bg-orange-50 text-amber-600"
+    }>
       <div className="container mx-auto px-4">
         <div
           ref={ref}
@@ -84,11 +90,21 @@ export const Stats = () => {
             >
               <div 
                 ref={el => numberRefs.current[index] = el}
-                className="text-3xl md:text-4xl font-bold text-primary"
+                className={
+                  theme === "dark"
+                    ? "text-3xl md:text-4xl font-bold text-amber-300"
+                    : "text-3xl md:text-4xl font-bold text-amber-600"
+                }
               >
                 0
               </div>
-              <div className="text-sm text-orange-300">{stat.label}</div>
+              <div className={
+                theme === "dark"
+                  ? "text-sm text-orange-300"
+                  : "text-sm text-orange-700"
+              }>
+                {stat.label}
+              </div>
             </div>
           ))}
         </div>
