@@ -74,10 +74,10 @@ export const Hero = () => {
 
         <section className="h-full flex flex-col items-center justify-center relative">
           <div className="container mx-auto px-4 h-full flex flex-col items-center justify-center">
-            <div className={`max-w-5xl flex flex-col items-center justify-center z-10 pt-6 backdrop-blur-sm p-6 rounded-3xl shadow-2xl
+            <div className={`max-w-5xl flex flex-col items-center justify-center z-10 pt-6 backdrop-blur-sm p-6 rounded-3xl 
               ${theme === 'dark' 
-                ? 'bg-gradient-to-br from-zinc-900/60 to-zinc-800/60 border border-zinc-700/30' 
-                : 'bg-gradient-to-br from-white/60 to-amber-50/60 border border-white/50'
+                ? 'bg-gradient-to-br from-zinc-900/60 to-zinc-800/60 border border-zinc-700/30 shadow-[0_8px_32px_rgba(251,191,36,0.25),0_4px_20px_rgba(255,179,0,0.15)]' 
+                : 'bg-gradient-to-br from-white/60 to-amber-50/60 border border-white/50 shadow-[0_10px_40px_rgba(251,191,36,0.2),0_6px_25px_rgba(252,211,77,0.15)]'
               } transition-colors duration-300`}>
               <h1 className="text-xl md:text-4xl lg:text-5xl font-extrabold text-center tracking-tight space-x-2 md:space-x-3 lg:space-x-4 m-4">
                 <span className={`block ${theme === 'dark' ? 'text-white' : 'text-zinc-900'} text-shadow-md`}>
@@ -97,18 +97,28 @@ export const Hero = () => {
               <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-4 z-20 w-full">
                 <button 
                   onClick={() => window.location.href = 'https://booking.d0lt.com'} 
-                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-10 py-3 h-auto rounded-full text-md shadow-[0_8px_30px_rgb(255,193,7,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,193,7,0.45)] border-[3px] border-amber-400/50 hover:border-amber-300/70"
+                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold px-10 py-3 h-auto rounded-full text-md shadow-[0_8px_30px_rgb(255,153,0,0.4),0_0_10px_rgba(255,179,0,0.25)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,153,0,0.5),0_0_15px_rgba(255,179,0,0.3)] border-[3px] border-amber-500/40 hover:border-amber-400/60"
                 >
                   Book Now
                 </button>
                 <button 
                   onClick={scrollToServices} 
-                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-10 py-3 h-auto rounded-full text-md shadow-[0_8px_30px_rgb(255,193,7,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,193,7,0.45)] border-[3px] border-amber-400/50 hover:border-amber-300/70"
+                  className="w-full md:w-[20vw] bg-gradient-to-br from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold px-10 py-3 h-auto rounded-full text-md shadow-[0_8px_30px_rgb(255,153,0,0.4),0_0_10px_rgba(255,179,0,0.25)] transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_35px_rgb(255,153,0,0.5),0_0_15px_rgba(255,179,0,0.3)] border-[3px] border-amber-500/40 hover:border-amber-400/60"
                 >
                   Our Services
                 </button>
               </div>
-              <div className={`w-full max-w-2xl mb-6 py-2 px-4 rounded-full flex items-center justify-between flex-wrap gap-2 ${theme === 'dark' ? 'bg-gradient-to-r from-zinc-900/70 to-zinc-800/70' : 'bg-gradient-to-r from-white/70 to-amber-50/70'} backdrop-blur-md shadow-lg border ${theme === 'dark' ? 'border-amber-500/20' : 'border-amber-500/30'}`}>
+              <div className={`w-full max-w-2xl mb-6 py-2 px-4 rounded-full flex items-center justify-between flex-wrap gap-2 
+                ${theme === 'dark' 
+                  ? 'bg-gradient-to-r from-zinc-900/70 to-zinc-800/70 border-amber-500/20' 
+                  : 'bg-gradient-to-r from-white/70 to-amber-50/70 border-amber-500/30'
+                } 
+                backdrop-blur-md border
+                ${theme === 'dark'
+                  ? 'shadow-[0_8px_25px_rgba(251,191,36,0.15),0_4px_10px_rgba(255,179,0,0.1)]'
+                  : 'shadow-[0_10px_25px_rgba(251,191,36,0.2),0_4px_15px_rgba(252,211,77,0.25)]'
+                }
+                transition-all duration-300 hover:shadow-[0_12px_30px_rgba(251,191,36,0.25),0_6px_20px_rgba(255,179,0,0.15)]`}>
                 <div className="flex items-center">
                   <div className="flex -space-x-1">
                     {['#ffb700', '#fa8128', '#f25a5a', '#a259ff'].map((color, i) => (
