@@ -16,7 +16,7 @@ export const Footer = () => {
               DOLT
             </h2> */}
             <img className='h-18 w-24' src={Logo} alt="logo" />
-            <p className="text-[16px] mt-9 font-extrabold text-amber-200 leading-none">
+            <p className="text-[16px] mt-9 font-extrabold text-[#FBAB03] leading-none">
              -GET IT DONE
             </p>
           </div>
