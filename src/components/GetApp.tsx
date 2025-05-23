@@ -17,7 +17,7 @@ export const GetApp = () => {
           {/* Left Content - Text */}
           <div className={isDark ? "text-amber-100" : "text-orange-900"}>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-transparent bg-clip-text">
-              GET STARTED WITH DOIT! TODAY
+              GET STARTED WITH DOLT! TODAY
             </h2>
             <p className={`text-sm sm:text-base md:text-lg mb-2 max-w-xl ${
               isDark ? "text-amber-200" : "text-orange-700"

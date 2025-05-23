@@ -73,7 +73,7 @@ export const Hero = () => {
         </div>
 
         <section className="h-full flex flex-col items-center justify-center relative">
-          <div className="container mx-auto px-4 h-full flex flex-col items-center justify-center">
+          <div className="mt-10 container mx-auto px-4 h-full flex flex-col items-center justify-center">
             <div className={`max-w-5xl flex flex-col items-center justify-center z-10 pt-6 backdrop-blur-sm p-6 rounded-3xl 
               ${theme === 'dark' 
                 ? 'bg-gradient-to-br from-zinc-900/60 to-zinc-800/60 border border-zinc-700/30 shadow-[0_8px_32px_rgba(251,191,36,0.25),0_4px_20px_rgba(255,179,0,0.15)]' 
@@ -148,6 +148,28 @@ export const Hero = () => {
                 </div>
               </div>
             </div>
+            
+            {/* Simple Scroll Down Button - Outside the Card */}
+            <button 
+              onClick={scrollToServices}
+              className={`mt-8 animate-bounce cursor-pointer focus:outline-none`}
+              aria-label="Scroll Down"
+            >
+              <svg 
+                className={`w-10 h-10 ${theme === 'dark' ? 'text-amber-400' : 'text-amber-600'}`} 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={1.5} 
+                  d="M19 13l-7 7-7-7m14-8l-7 7-7-7" 
+                />
+              </svg>
+            </button>
           </div>
         </section>
       </div>

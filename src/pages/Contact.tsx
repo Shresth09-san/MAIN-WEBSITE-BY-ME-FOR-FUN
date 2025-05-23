@@ -143,7 +143,7 @@ const Contact: React.FC = () => {
                     }`}>Phone</h3>
                     <p className={`${
                       theme === 'dark' ? 'text-orange-200' : 'text-orange-700'
-                    }`}>+54 2915738993</p>
+                    }`}>+54 92914665341</p>
                   </div>
                 </div>
                 

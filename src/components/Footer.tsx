@@ -2,6 +2,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Linkedin, Twitter, Facebook, Instagram, Mail, ArrowRight } from "lucide-react";
 import { SiMercadopago, SiPaypal, SiStripe } from 'react-icons/si';
+import Logo from "@/assests/logoR.png";
+
 
 export const Footer = () => {
   return (
@@ -9,14 +11,16 @@ export const Footer = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
           {/* Logo and About */}
-          <div className="flex flex-row items-center gap-2">
-            <h2 className="text-2xl font-bold text-amber-400 leading-none">
-              DOLT<span className="text-amber-500">.</span>
-            </h2>
-            <p className="text-sm text-amber-200 leading-none">
-              Empowering businesses with innovative solutions. Join thousands of satisfied customers worldwide.
+          <div className="flex flex-row items-center gap-1">
+            {/* <h2 className="text-2xl font-bold text-amber-400 leading-none">
+              DOLT
+            </h2> */}
+            <img className='h-18 w-24' src={Logo} alt="logo" />
+            <p className="text-[16px] mt-9 font-extrabold text-amber-200 leading-none">
+             -GET IT DONE
             </p>
           </div>
+          
 
           {/* Links */}
           <div className="flex flex-col sm:flex-row flex-wrap gap-6 sm:gap-x-16 md:gap-x-20 sm:gap-y-0 items-start justify-center">
